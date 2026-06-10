@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="20260611-1" author="alex">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kyc_status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_verified" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_verified" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="user_roles" columnNames="user_id, role_id"/>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="user_id" constraintName="fk_user_roles_user" referencedTableName="users" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="role_id" constraintName="fk_user_roles_role" referencedTableName="roles" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="20260611-2" author="alex">
+        <insert tableName="roles">
+            <column name="name" value="ROLE_PLAYER"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_SUPPORT"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_RISK_ANALYST"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_TRADER"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+
+        <!-- Initial users: password is 'password' BCrypt hashed -->
+        <insert tableName="users">
+            <column name="email" value="player@example.com"/>
+            <column name="password_hash" value="$2a$10$BXj62L6kVDolFbIl5G7YROeuFZ8cFJPKkYfDmTCXHPAzcYMRJy582"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="kyc_status" value="VERIFIED"/>
+        </insert>
+        <insert tableName="users">
+            <column name="email" value="support@example.com"/>
+            <column name="password_hash" value="$2a$10$BXj62L6kVDolFbIl5G7YROeuFZ8cFJPKkYfDmTCXHPAzcYMRJy582"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="kyc_status" value="VERIFIED"/>
+        </insert>
+
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email = 'player@example.com')"/>
+            <column name="role_id" valueComputed="(SELECT id FROM roles WHERE name = 'ROLE_PLAYER')"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email = 'support@example.com')"/>
+            <column name="role_id" valueComputed="(SELECT id FROM roles WHERE name = 'ROLE_SUPPORT')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

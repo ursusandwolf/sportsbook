@@ -42,23 +42,22 @@ class SportsbookApplicationTests {
 
     @Test
     void profileEndpointWorksWithCorrectAuth() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("player", "password")
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("player@example.com", "password")
                 .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().get("username")).isEqualTo("player");
+        assertThat(response.getBody().get("email")).isEqualTo("player@example.com");
     }
 
     @Test
     void profileEndpointWorksForSupportUser() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("support", "password")
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("support@example.com", "password")
                 .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().get("username")).isEqualTo("player"); // Hardcoded in controller for now
     }
 
     @Test
     void profileEndpointFailsWithIncorrectAuth() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("player", "wrong")
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("player@example.com", "wrong")
                 .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
