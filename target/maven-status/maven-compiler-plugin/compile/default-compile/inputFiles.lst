@@ -1,4 +1,5 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/SportsbookApplication.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/RegistrationController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/api/HealthController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/ErrorResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/GlobalExceptionHandler.java
@@ -6,9 +7,13 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/SecurityUser.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/config/SecurityConfig.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/ProfileController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/dto/RegistrationRequest.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/dto/RegistrationResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/KycStatus.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/Role.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/RoleName.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/User.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/UserStatus.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/repository/RoleRepository.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/repository/UserRepository.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/service/UserService.java
