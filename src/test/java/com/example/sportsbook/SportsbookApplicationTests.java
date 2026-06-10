@@ -49,6 +49,14 @@ class SportsbookApplicationTests {
     }
 
     @Test
+    void profileEndpointWorksForSupportUser() {
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("support", "password")
+                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().get("username")).isEqualTo("player"); // Hardcoded in controller for now
+    }
+
+    @Test
     void profileEndpointFailsWithIncorrectAuth() {
         ResponseEntity<Map> response = restTemplate.withBasicAuth("player", "wrong")
                 .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
