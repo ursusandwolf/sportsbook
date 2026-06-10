@@ -7,5 +7,7 @@
 
     <!-- Future migrations will be included here -->
     <include file="db/changelog/migrations/001-create-users-and-roles.xml"/>
+    <include file="db/changelog/migrations/002-add-test-status-users.xml"/>
+    <include file="db/changelog/migrations/003-add-expired-user.xml"/>
 
 </databaseChangeLog>

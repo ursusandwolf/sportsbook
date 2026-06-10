@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="20260611-3" author="alex">
+        <!-- Suspended user -->
+        <insert tableName="users">
+            <column name="email" value="suspended@example.com"/>
+            <column name="password_hash" value="$2a$10$BXj62L6kVDolFbIl5G7YROeuFZ8cFJPKkYfDmTCXHPAzcYMRJy582"/>
+            <column name="status" value="SUSPENDED"/>
+            <column name="kyc_status" value="VERIFIED"/>
+        </insert>
+        
+        <!-- Pending verification user -->
+        <insert tableName="users">
+            <column name="email" value="pending@example.com"/>
+            <column name="password_hash" value="$2a$10$BXj62L6kVDolFbIl5G7YROeuFZ8cFJPKkYfDmTCXHPAzcYMRJy582"/>
+            <column name="status" value="PENDING_VERIFICATION"/>
+            <column name="kyc_status" value="NOT_STARTED"/>
+        </insert>
+
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email = 'suspended@example.com')"/>
+            <column name="role_id" valueComputed="(SELECT id FROM roles WHERE name = 'ROLE_PLAYER')"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email = 'pending@example.com')"/>
+            <column name="role_id" valueComputed="(SELECT id FROM roles WHERE name = 'ROLE_PLAYER')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

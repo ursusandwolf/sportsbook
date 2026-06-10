@@ -41,7 +41,7 @@ class SportsbookApplicationTests {
     }
 
     @Test
-    void profileEndpointWorksWithCorrectAuth() {
+    void profileEndpointWorksWithActiveUser() {
         ResponseEntity<Map> response = restTemplate.withBasicAuth("player@example.com", "password")
                 .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -49,10 +49,25 @@ class SportsbookApplicationTests {
     }
 
     @Test
-    void profileEndpointWorksForSupportUser() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("support@example.com", "password")
+    void profileEndpointFailsForSuspendedUser() {
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("suspended@example.com", "password")
                 .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        // Spring Security returns 401 for locked/disabled accounts by default to prevent account enumeration
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    void profileEndpointFailsForPendingVerificationUser() {
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("pending@example.com", "password")
+                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    void profileEndpointFailsForExpiredUser() {
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("expired@example.com", "password")
+                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test

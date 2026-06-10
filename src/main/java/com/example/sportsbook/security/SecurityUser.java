@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.OffsetDateTime;
 import java.util.Collection;
 
 @RequiredArgsConstructor
@@ -33,7 +34,10 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        if (user.getUpdatedAt() == null) {
+            return true;
+        }
+        return user.getUpdatedAt().isAfter(OffsetDateTime.now().minusDays(365));
     }
 
     @Override
