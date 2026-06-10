@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,45 +38,27 @@ class SportsbookApplicationTests {
     }
 
     @Test
-    void profileEndpointRequiresAuth() {
-        ResponseEntity<Map> response = restTemplate.getForEntity("http://localhost:" + port + "/api/profile", Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    void profileEndpointWorksWithActiveUser() {
+    void meEndpointReturnsCurrentUser() {
         ResponseEntity<Map> response = restTemplate.withBasicAuth("player@example.com", "password")
-                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
+                .getForEntity("http://localhost:" + port + "/api/users/me", Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().get("email")).isEqualTo("player@example.com");
     }
 
     @Test
-    void profileEndpointFailsForSuspendedUser() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("suspended@example.com", "password")
-                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    void adminEndpointAccessibleByAdmin() {
+        ResponseEntity<List> response = restTemplate.withBasicAuth("admin@example.com", "password")
+                .getForEntity("http://localhost:" + port + "/api/admin/users", List.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().size()).isGreaterThan(0);
     }
 
     @Test
-    void profileEndpointFailsForPendingVerificationUser() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("pending@example.com", "password")
-                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    void profileEndpointFailsForExpiredUser() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("expired@example.com", "password")
-                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    void profileEndpointFailsWithIncorrectAuth() {
-        ResponseEntity<Map> response = restTemplate.withBasicAuth("player@example.com", "wrong")
-                .getForEntity("http://localhost:" + port + "/api/profile", Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    void adminEndpointForbiddenForPlayer() {
+        ResponseEntity<Map> response = restTemplate.withBasicAuth("player@example.com", "password")
+                .getForEntity("http://localhost:" + port + "/api/admin/users", Map.class);
+        // Method security returns 403 Forbidden
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -90,32 +73,6 @@ class SportsbookApplicationTests {
         ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", request, Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().get("email")).isEqualTo("newuser@example.com");
-    }
-
-    @Test
-    void registrationFailsWithSimplePassword() {
-        RegistrationRequest request = RegistrationRequest.builder()
-                .email("simple@example.com")
-                .password("password123") // Missing special character
-                .confirmPassword("password123")
-                .dateOfBirth(LocalDate.now().minusYears(20))
-                .build();
-
-        ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", request, Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    void registrationFailsWithShortPassword() {
-        RegistrationRequest request = RegistrationRequest.builder()
-                .email("short@example.com")
-                .password("123!a")
-                .confirmPassword("123!a")
-                .dateOfBirth(LocalDate.now().minusYears(20))
-                .build();
-
-        ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", request, Map.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test

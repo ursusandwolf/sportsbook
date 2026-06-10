@@ -6,9 +6,11 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/CustomUserDetailsService.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/SecurityUser.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/config/SecurityConfig.java
-/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/ProfileController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/AdminUserController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/UserController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/dto/RegistrationRequest.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/dto/RegistrationResponse.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/dto/UserResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/KycStatus.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/Role.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/model/RoleName.java

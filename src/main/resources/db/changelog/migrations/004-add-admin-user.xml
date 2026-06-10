@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="20260611-5" author="alex">
+        <insert tableName="users">
+            <column name="email" value="admin@example.com"/>
+            <column name="password_hash" value="$2a$10$BXj62L6kVDolFbIl5G7YROeuFZ8cFJPKkYfDmTCXHPAzcYMRJy582"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="kyc_status" value="VERIFIED"/>
+        </insert>
+
+        <insert tableName="user_roles">
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email = 'admin@example.com')"/>
+            <column name="role_id" valueComputed="(SELECT id FROM roles WHERE name = 'ROLE_ADMIN')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

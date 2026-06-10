@@ -2,6 +2,7 @@ com/example/sportsbook/SportsbookApplication.class
 com/example/sportsbook/user/api/dto/RegistrationRequest.class
 com/example/sportsbook/common/exception/ErrorResponse$ErrorResponseBuilder.class
 com/example/sportsbook/common/exception/GlobalExceptionHandler.class
+com/example/sportsbook/user/api/dto/UserResponse$UserResponseBuilder.class
 com/example/sportsbook/user/model/User$UserBuilder.class
 com/example/sportsbook/user/model/KycStatus.class
 com/example/sportsbook/common/api/HealthController.class
@@ -9,16 +10,18 @@ com/example/sportsbook/user/model/Role.class
 com/example/sportsbook/user/model/Role$RoleBuilder.class
 com/example/sportsbook/user/service/UserService.class
 com/example/sportsbook/security/SecurityUser.class
+com/example/sportsbook/user/api/dto/UserResponse.class
 com/example/sportsbook/user/api/dto/RegistrationResponse$RegistrationResponseBuilder.class
 com/example/sportsbook/user/model/User.class
 com/example/sportsbook/common/exception/ErrorResponse.class
 com/example/sportsbook/user/api/dto/RegistrationResponse.class
+com/example/sportsbook/user/api/AdminUserController.class
 com/example/sportsbook/user/repository/UserRepository.class
 com/example/sportsbook/user/model/UserStatus.class
-com/example/sportsbook/user/api/ProfileController.class
 com/example/sportsbook/user/model/RoleName.class
 com/example/sportsbook/security/config/SecurityConfig.class
 com/example/sportsbook/user/repository/RoleRepository.class
+com/example/sportsbook/user/api/UserController.class
 com/example/sportsbook/auth/api/RegistrationController.class
 com/example/sportsbook/user/api/dto/RegistrationRequest$RegistrationRequestBuilder.class
 com/example/sportsbook/security/CustomUserDetailsService.class
