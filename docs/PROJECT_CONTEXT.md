@@ -1,7 +1,7 @@
 # Project Context: Sportsbook
 
 ## Status
-- **Current Phase**: Iteration 5 Complete
+- **Current Phase**: Iteration 6 Complete
 - **Last Update**: 2026-06-11
 
 ## Project Goal
@@ -12,13 +12,14 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
 - **Database**: PostgreSQL (Production), H2 (Test). Migrations managed by Liquibase.
 - **Security**: 
     - Layer 2.1 implemented.
-    - Authentication: HTTP Basic.
+    - Authentication: JWT (JSON Web Token).
     - User Store: Database-backed (JPA + CustomUserDetailsService).
     - Roles: ROLE_PLAYER, ROLE_SUPPORT, ROLE_RISK_ANALYST, ROLE_TRADER, ROLE_ADMIN.
 - **Modules**: 
     - `common`: Health, Exception handling.
     - `user`: Entities, Repositories, Profile API.
-    - `security`: SecurityFilterChain, UserDetails implementation.
+    - `security`: SecurityFilterChain, UserDetails implementation, JWT.
+    - `auth`: Registration, Login.
 
 ## Roadmap & Pending Items
 - [ ] **Iteration 3**: PasswordEncoder hardening and User Statuses (Locked/Disabled).
