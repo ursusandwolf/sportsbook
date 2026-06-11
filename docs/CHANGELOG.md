@@ -8,3 +8,4 @@
 - **Iteration 2**: Dynamic user management. Persistent `User` and `Role` entities in PostgreSQL. Custom `UserDetailsService` to load users from the database. Added seed data via Liquibase.
 - **Iteration 3**: Password hardening with BCrypt. Implemented account status checks (SUSPENDED, PENDING) and expiration logic (updatedAt > 365 days).
 - **Iteration 4**: User Registration API. Implemented `RegistrationRequest` DTO with Bean Validation (email, password complexity, 18+ age check). Added Global Exception Handling for validation and business errors.
+- **Iteration 5**: Method-level security. Added `SecurityUtils` for user context access and applied `@PreAuthorize` on admin endpoints.

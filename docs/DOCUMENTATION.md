@@ -24,6 +24,8 @@ The project follows a **Modular Monolith** pattern with **package-by-feature** s
 - **Authentication**: HTTP Basic (Layer 2.1).
 - **UserDetails**: `SecurityUser` wraps the `User` entity to bridge with Spring Security.
 - **Service**: `CustomUserDetailsService` loads users by email.
+- **Utils**: `SecurityUtils` provides static access to the currently authenticated `SecurityUser`.
+- **Method Security**: `@EnableMethodSecurity` enabled; `@PreAuthorize` used for role-based endpoint protection.
 
 ## Database Schema
 - `users`: Core user data, password hashes, and statuses.

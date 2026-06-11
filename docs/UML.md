@@ -17,6 +17,11 @@ classDiagram
         +getUser()
     }
 
+    class SecurityUtils {
+        <<static>>
+        +getCurrentUser() Optional~SecurityUser~
+    }
+
     class User {
         -Long id
         -String email
@@ -33,6 +38,7 @@ classDiagram
     UserDetails <|.. SecurityUser
     SecurityUser o-- User
     User "1" *-- "many" Role
+    SecurityUtils ..> SecurityUser
 ```
 
 ## Security Flow
@@ -50,5 +56,5 @@ CustomUserDetailsService  ───>  UserRepository (PostgreSQL)
     ↓
 SecurityUser (Principal)
     ↓
-Controller
+Controller  <───  SecurityUtils
 ```
