@@ -1,11 +1,17 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/SportsbookApplication.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/AuthController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/RegistrationController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/LoginRequest.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/LoginResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/api/HealthController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/ErrorResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/GlobalExceptionHandler.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/CustomUserDetailsService.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/SecurityUser.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/SecurityUtils.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/config/SecurityConfig.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/jwt/JwtAuthenticationFilter.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/jwt/JwtUtils.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/AdminUserController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/UserController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/api/dto/RegistrationRequest.java

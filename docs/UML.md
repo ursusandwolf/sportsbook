@@ -44,17 +44,13 @@ classDiagram
 ## Security Flow
 
 ```text
-HTTP Request
+HTTP Request (with Bearer token)
     ↓
 SecurityFilterChain
     ↓
-BasicAuthenticationFilter
+JwtAuthenticationFilter (validates JWT)
     ↓
-AuthenticationManager
-    ↓
-CustomUserDetailsService  ───>  UserRepository (PostgreSQL)
-    ↓
-SecurityUser (Principal)
+SecurityContextHolder (Principal set)
     ↓
 Controller  <───  SecurityUtils
 ```

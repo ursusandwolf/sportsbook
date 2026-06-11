@@ -9,3 +9,4 @@
 - **Iteration 3**: Password hardening with BCrypt. Implemented account status checks (SUSPENDED, PENDING) and expiration logic (updatedAt > 365 days).
 - **Iteration 4**: User Registration API. Implemented `RegistrationRequest` DTO with Bean Validation (email, password complexity, 18+ age check). Added Global Exception Handling for validation and business errors.
 - **Iteration 5**: Method-level security. Added `SecurityUtils` for user context access and applied `@PreAuthorize` on admin endpoints.
+- **Iteration 6**: JWT Authentication. Implemented stateless authentication using JSON Web Tokens. Added `/api/auth/login` endpoint and `JwtAuthenticationFilter`.

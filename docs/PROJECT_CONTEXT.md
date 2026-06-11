@@ -23,6 +23,6 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
 ## Roadmap & Pending Items
 - [ ] **Iteration 3**: PasswordEncoder hardening and User Statuses (Locked/Disabled).
 - [ ] **Iteration 4**: User Registration with validation.
-- [ ] **Iteration 5**: Current user context and method-level security.
-- [ ] **Iteration 6**: JWT implementation.
+- [x] **Iteration 5**: Current user context and method-level security.
+- [x] **Iteration 6**: JWT implementation.
 - [ ] **Iteration 7**: Wallet and immutable ledger.

@@ -1,4 +1,6 @@
 com/example/sportsbook/SportsbookApplication.class
+com/example/sportsbook/auth/api/dto/LoginResponse.class
+com/example/sportsbook/auth/api/AuthController.class
 com/example/sportsbook/user/api/dto/RegistrationRequest.class
 com/example/sportsbook/common/exception/ErrorResponse$ErrorResponseBuilder.class
 com/example/sportsbook/common/exception/GlobalExceptionHandler.class
@@ -14,14 +16,18 @@ com/example/sportsbook/user/api/dto/UserResponse.class
 com/example/sportsbook/user/api/dto/RegistrationResponse$RegistrationResponseBuilder.class
 com/example/sportsbook/user/model/User.class
 com/example/sportsbook/common/exception/ErrorResponse.class
+com/example/sportsbook/security/SecurityUtils.class
 com/example/sportsbook/user/api/dto/RegistrationResponse.class
 com/example/sportsbook/user/api/AdminUserController.class
 com/example/sportsbook/user/repository/UserRepository.class
 com/example/sportsbook/user/model/UserStatus.class
 com/example/sportsbook/user/model/RoleName.class
 com/example/sportsbook/security/config/SecurityConfig.class
+com/example/sportsbook/security/jwt/JwtUtils.class
 com/example/sportsbook/user/repository/RoleRepository.class
 com/example/sportsbook/user/api/UserController.class
 com/example/sportsbook/auth/api/RegistrationController.class
 com/example/sportsbook/user/api/dto/RegistrationRequest$RegistrationRequestBuilder.class
 com/example/sportsbook/security/CustomUserDetailsService.class
+com/example/sportsbook/auth/api/dto/LoginRequest.class
+com/example/sportsbook/security/jwt/JwtAuthenticationFilter.class
