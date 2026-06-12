@@ -1,6 +1,7 @@
 package com.example.sportsbook.security.jwt;
 
 import com.example.sportsbook.security.CustomUserDetailsService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,25 +31,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
-        try {
-            userEmail = jwtUtils.getUsernameFromToken(jwt);
-        } catch (Exception e) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        final String jwt = authHeader.substring(7);
+        final Claims claims = jwtUtils.validateAndGetClaims(jwt);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (claims != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            String userEmail = jwtUtils.getUsernameFromClaims(claims);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtUtils.validateToken(jwt)) {
+
+            // ПРОВЕРКА СТАТУСА (P1 Fix)
+            if (userDetails.isEnabled() && userDetails.isAccountNonLocked() && userDetails.isAccountNonExpired()) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

@@ -19,7 +19,7 @@ public class JwtUtils {
     @Value("${app.jwt.secret:dGhpcy1pcy1hLXZlcnktc2VjcmV0LWtleS1mb3Itand0LXNwb3J0c2Jvb2stcHJvamVjdC1tdXN0LWJlLWxvbmctZW5vdWdo}")
     private String jwtSecret;
 
-    @Value("${app.jwt.expiration-ms:3600000}") // 1 час
+    @Value("${app.jwt.expiration-ms:900000}") // 15 минут
     private long jwtExpirationMs;
 
     public String generateToken(SecurityUser userDetails) {
@@ -31,27 +31,21 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
-    }
-
-    public boolean validateToken(String token) {
+    public Claims validateAndGetClaims(String token) {
         try {
-            Jwts.parser().verifyWith(getSigningKey()).build().parse(token);
-            return true;
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (Exception e) {
-            // В реальном проекте логируйте ошибку (expired, signature invalid и т.д.)
-            return false;
+            // В реальном проекте логируйте конкретные исключения: ExpiredJwtException, SignatureException и т.д.
+            return null;
         }
     }
 
-    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-        return claimsResolver.apply(claims);
+    public String getUsernameFromClaims(Claims claims) {
+        return claims.getSubject();
     }
 
     private SecretKey getSigningKey() {

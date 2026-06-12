@@ -6,6 +6,7 @@ import com.example.sportsbook.user.api.dto.UserResponse;
 import com.example.sportsbook.user.model.*;
 import com.example.sportsbook.user.repository.RoleRepository;
 import com.example.sportsbook.user.repository.UserRepository;
+import com.example.sportsbook.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final WalletService walletService;
 
     @Transactional
     public RegistrationResponse register(RegistrationRequest request) {
@@ -38,7 +40,7 @@ public class UserService {
         User user = User.builder()
                 .email(email)
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .status(UserStatus.PENDING_VERIFICATION)
+                .status(UserStatus.ACTIVE)
                 .kycStatus(KycStatus.NOT_STARTED)
                 .emailVerified(false)
                 .phoneVerified(false)
@@ -46,6 +48,9 @@ public class UserService {
                 .build();
 
         User savedUser = userRepository.save(user);
+
+        // Создаем кошелек для нового пользователя (Iteration 7)
+        walletService.createWallet(savedUser);
 
         return RegistrationResponse.builder()
                 .id(savedUser.getId())

@@ -41,16 +41,32 @@ classDiagram
     SecurityUtils ..> SecurityUser
 ```
 
-## Security Flow
+## Wallet & Ledger Pattern
 
-```text
-HTTP Request (with Bearer token)
-    ↓
-SecurityFilterChain
-    ↓
-JwtAuthenticationFilter (validates JWT)
-    ↓
-SecurityContextHolder (Principal set)
-    ↓
-Controller  <───  SecurityUtils
+```mermaid
+classDiagram
+    class Wallet {
+        -BigDecimal availableBalance
+        -BigDecimal reservedBalance
+        -Long version
+        +getTotalBalance()
+    }
+
+    class WalletEntry {
+        -WalletEntryType type
+        -BigDecimal amount
+        -BigDecimal balanceAfter
+        -String idempotencyKey
+    }
+
+    class WalletService {
+        +createWallet(User)
+        +deposit(userId, amount, key)
+        +reserveFunds(userId, amount, refType, refId, key)
+    }
+
+    Wallet "1" *-- "many" WalletEntry
+    Wallet o-- User
+    WalletService ..> Wallet
+    WalletService ..> WalletEntry
 ```

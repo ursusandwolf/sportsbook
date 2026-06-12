@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.sportsbook.SportsbookApplicationTests" time="5.215" tests="7" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.sportsbook.wallet.WalletIntegrationTests" time="1.074" tests="5" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -75,124 +75,55 @@
     <property name="java.class.version" value="65.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[sportsbook] "/>
   </properties>
-  <testcase name="registrationFailsForUnderage" classname="com.example.sportsbook.SportsbookApplicationTests" time="0.529">
-    <system-out><![CDATA[11:40:52.763 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.sportsbook.SportsbookApplicationTests]: SportsbookApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-11:40:52.831 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.sportsbook.SportsbookApplication for test class com.example.sportsbook.SportsbookApplicationTests
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v3.4.0)
-
-2026-06-12T11:40:53.053+03:00  INFO 13129 --- [sportsbook] [           main] c.e.s.SportsbookApplicationTests         : Starting SportsbookApplicationTests using Java 21.0.10 with PID 13129 (started by alex in /Users/alex/IdeaProjects/sportsbook)
-2026-06-12T11:40:53.053+03:00  INFO 13129 --- [sportsbook] [           main] c.e.s.SportsbookApplicationTests         : The following 1 profile is active: "test"
-2026-06-12T11:40:53.521+03:00  INFO 13129 --- [sportsbook] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-12T11:40:53.550+03:00  INFO 13129 --- [sportsbook] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 24 ms. Found 4 JPA repository interfaces.
-2026-06-12T11:40:53.988+03:00  INFO 13129 --- [sportsbook] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
-2026-06-12T11:40:53.994+03:00  INFO 13129 --- [sportsbook] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-12T11:40:53.995+03:00  INFO 13129 --- [sportsbook] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
-2026-06-12T11:40:54.017+03:00  INFO 13129 --- [sportsbook] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-12T11:40:54.018+03:00  INFO 13129 --- [sportsbook] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 958 ms
-2026-06-12T11:40:54.176+03:00  INFO 13129 --- [sportsbook] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-12T11:40:54.328+03:00  INFO 13129 --- [sportsbook] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
-2026-06-12T11:40:54.329+03:00  INFO 13129 --- [sportsbook] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-12T11:40:54.376+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.database                       : Set default schema name to PUBLIC
-2026-06-12T11:40:54.652+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Creating database history table with name: PUBLIC.DATABASECHANGELOG
-2026-06-12T11:40:54.698+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
-2026-06-12T11:40:54.777+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.lockservice                    : Successfully acquired change log lock
-2026-06-12T11:40:54.778+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.command                        : Using deploymentId: 1253654778
-2026-06-12T11:40:54.779+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
-2026-06-12T11:40:54.801+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Running Changeset: db/changelog/migrations/001-create-users-and-roles.xml::20260611-1::alex
-2026-06-12T11:40:54.806+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Table roles created
-2026-06-12T11:40:54.809+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Table users created
-2026-06-12T11:40:54.810+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Table user_roles created
-2026-06-12T11:40:54.811+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Primary key added to user_roles (user_id, role_id)
-2026-06-12T11:40:54.814+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Foreign key constraint added to user_roles (user_id)
-2026-06-12T11:40:54.815+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Foreign key constraint added to user_roles (role_id)
-2026-06-12T11:40:54.815+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : ChangeSet db/changelog/migrations/001-create-users-and-roles.xml::20260611-1::alex ran successfully in 13ms
-2026-06-12T11:40:54.820+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Running Changeset: db/changelog/migrations/001-create-users-and-roles.xml::20260611-2::alex
-2026-06-12T11:40:54.821+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into roles
-2026-06-12T11:40:54.822+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into roles
-2026-06-12T11:40:54.822+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into roles
-2026-06-12T11:40:54.822+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into roles
-2026-06-12T11:40:54.823+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into roles
-2026-06-12T11:40:54.824+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into users
-2026-06-12T11:40:54.832+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into users
-2026-06-12T11:40:54.833+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into user_roles
-2026-06-12T11:40:54.834+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into user_roles
-2026-06-12T11:40:54.834+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : ChangeSet db/changelog/migrations/001-create-users-and-roles.xml::20260611-2::alex ran successfully in 14ms
-2026-06-12T11:40:54.836+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Running Changeset: db/changelog/migrations/002-add-test-status-users.xml::20260611-3::alex
-2026-06-12T11:40:54.837+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into users
-2026-06-12T11:40:54.838+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into users
-2026-06-12T11:40:54.838+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into user_roles
-2026-06-12T11:40:54.839+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into user_roles
-2026-06-12T11:40:54.839+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : ChangeSet db/changelog/migrations/002-add-test-status-users.xml::20260611-3::alex ran successfully in 3ms
-2026-06-12T11:40:54.841+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Running Changeset: db/changelog/migrations/003-add-expired-user.xml::20260611-4::alex
-2026-06-12T11:40:54.842+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into users
-2026-06-12T11:40:54.842+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into user_roles
-2026-06-12T11:40:54.842+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : ChangeSet db/changelog/migrations/003-add-expired-user.xml::20260611-4::alex ran successfully in 1ms
-2026-06-12T11:40:54.845+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Running Changeset: db/changelog/migrations/004-add-admin-user.xml::20260611-5::alex
-2026-06-12T11:40:54.846+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into users
-2026-06-12T11:40:54.846+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : New row inserted into user_roles
-2026-06-12T11:40:54.847+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : ChangeSet db/changelog/migrations/004-add-admin-user.xml::20260611-5::alex ran successfully in 2ms
-2026-06-12T11:40:54.848+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Running Changeset: db/changelog/migrations/005-create-wallet-and-ledger.xml::005-create-wallets::alex
-2026-06-12T11:40:54.850+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Table wallets created
-2026-06-12T11:40:54.851+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Index idx_wallet_user_id created
-2026-06-12T11:40:54.851+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : ChangeSet db/changelog/migrations/005-create-wallet-and-ledger.xml::005-create-wallets::alex ran successfully in 3ms
-2026-06-12T11:40:54.852+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Running Changeset: db/changelog/migrations/005-create-wallet-and-ledger.xml::006-create-wallet-entries::alex
-2026-06-12T11:40:54.856+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Table wallet_entries created
-2026-06-12T11:40:54.857+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Index idx_entry_wallet_id created
-2026-06-12T11:40:54.858+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : Index idx_entry_idempotency created
-2026-06-12T11:40:54.858+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.changelog                      : ChangeSet db/changelog/migrations/005-create-wallet-and-ledger.xml::006-create-wallet-entries::alex ran successfully in 5ms
-2026-06-12T11:40:54.861+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.util                           : UPDATE SUMMARY
-2026-06-12T11:40:54.861+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.util                           : Run:                          7
-2026-06-12T11:40:54.861+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.util                           : Previously run:               0
-2026-06-12T11:40:54.861+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.util                           : Filtered out:                 0
-2026-06-12T11:40:54.861+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.util                           : -------------------------------
-2026-06-12T11:40:54.861+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.util                           : Total change sets:            7
-2026-06-12T11:40:54.861+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.util                           : Update summary generated
-2026-06-12T11:40:54.862+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.command                        : Update command completed successfully.
-2026-06-12T11:40:54.862+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.ui                             : Liquibase: Update has been successful. Rows affected: 24
-2026-06-12T11:40:54.863+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.lockservice                    : Successfully released change log lock
-2026-06-12T11:40:54.864+03:00  INFO 13129 --- [sportsbook] [           main] liquibase.command                        : Command execution complete
-2026-06-12T11:40:54.919+03:00  INFO 13129 --- [sportsbook] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-12T11:40:54.964+03:00  INFO 13129 --- [sportsbook] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.2.Final
-2026-06-12T11:40:54.984+03:00  INFO 13129 --- [sportsbook] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-12T11:40:55.129+03:00  INFO 13129 --- [sportsbook] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-12T11:40:55.175+03:00  INFO 13129 --- [sportsbook] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 2.3.232
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-06-12T11:40:55.663+03:00  INFO 13129 --- [sportsbook] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-12T11:40:55.675+03:00  INFO 13129 --- [sportsbook] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-12T11:40:55.889+03:00  INFO 13129 --- [sportsbook] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
-2026-06-12T11:40:55.978+03:00  WARN 13129 --- [sportsbook] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-12T11:40:56.249+03:00  INFO 13129 --- [sportsbook] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2026-06-12T11:40:56.576+03:00  INFO 13129 --- [sportsbook] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 52977 (http) with context path '/'
-2026-06-12T11:40:56.590+03:00  INFO 13129 --- [sportsbook] [           main] c.e.s.SportsbookApplicationTests         : Started SportsbookApplicationTests in 3.702 seconds (process running for 4.167)
-2026-06-12T11:40:56.628+03:00  INFO 13129 --- [sportsbook] [           main] c.e.sportsbook.SportsbookApplication     : Sportsbook Application started. Version: 0.0.1
-2026-06-12T11:40:57.027+03:00  INFO 13129 --- [sportsbook] [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-12T11:40:57.027+03:00  INFO 13129 --- [sportsbook] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-12T11:40:57.028+03:00  INFO 13129 --- [sportsbook] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-]]></system-out>
-    <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
-WARNING: A Java agent has been loaded dynamically (/Users/alex/.m2/repository/net/bytebuddy/byte-buddy-agent/1.15.10/byte-buddy-agent-1.15.10.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-]]></system-err>
-  </testcase>
-  <testcase name="healthCheckReturnsUpWithoutAuth" classname="com.example.sportsbook.SportsbookApplicationTests" time="0.011"/>
-  <testcase name="adminEndpointAccessibleByAdmin" classname="com.example.sportsbook.SportsbookApplicationTests" time="0.366">
-    <system-out><![CDATA[Hibernate: 
+  <testcase name="withdrawFailsIfInsufficientFunds" classname="com.example.sportsbook.wallet.WalletIntegrationTests" time="0.245">
+    <system-out><![CDATA[2026-06-12T11:40:57.906+03:00  INFO 13129 --- [sportsbook] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.sportsbook.wallet.WalletIntegrationTests]: WalletIntegrationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-06-12T11:40:57.917+03:00  INFO 13129 --- [sportsbook] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.sportsbook.SportsbookApplication for test class com.example.sportsbook.wallet.WalletIntegrationTests
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.name 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        users
+        (created_at, email, email_verified, kyc_status, password_hash, phone_verified, status, updated_at, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        wallets
+        (available_balance, currency, reserved_balance, user_id, version, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
     select
         u1_0.id,
         u1_0.created_at,
@@ -250,181 +181,34 @@ Hibernate:
         r1_0.user_id=?
 Hibernate: 
     select
-        u1_0.id,
-        u1_0.created_at,
-        u1_0.email,
-        u1_0.email_verified,
-        u1_0.kyc_status,
-        u1_0.password_hash,
-        u1_0.phone_verified,
-        u1_0.status,
-        u1_0.updated_at,
-        u1_0.version 
+        we1_0.id,
+        we1_0.amount,
+        we1_0.balance_after,
+        we1_0.created_at,
+        we1_0.idempotency_key,
+        we1_0.reference_id,
+        we1_0.reference_type,
+        we1_0.type,
+        we1_0.wallet_id 
     from
-        users u1_0
+        wallet_entries we1_0 
+    where
+        we1_0.idempotency_key=?
 Hibernate: 
     select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
     from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
+        wallets w1_0 
     where
-        r1_0.user_id=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
+        w1_0.user_id=?
 ]]></system-out>
   </testcase>
-  <testcase name="meEndpointReturnsCurrentUser" classname="com.example.sportsbook.SportsbookApplicationTests" time="0.111">
-    <system-out><![CDATA[Hibernate: 
-    select
-        u1_0.id,
-        u1_0.created_at,
-        u1_0.email,
-        u1_0.email_verified,
-        u1_0.kyc_status,
-        u1_0.password_hash,
-        u1_0.phone_verified,
-        u1_0.status,
-        u1_0.updated_at,
-        u1_0.version 
-    from
-        users u1_0 
-    where
-        u1_0.email=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
-Hibernate: 
-    select
-        u1_0.id,
-        u1_0.created_at,
-        u1_0.email,
-        u1_0.email_verified,
-        u1_0.kyc_status,
-        u1_0.password_hash,
-        u1_0.phone_verified,
-        u1_0.status,
-        u1_0.updated_at,
-        u1_0.version 
-    from
-        users u1_0 
-    where
-        u1_0.email=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
-Hibernate: 
-    select
-        u1_0.id,
-        u1_0.created_at,
-        u1_0.email,
-        u1_0.email_verified,
-        u1_0.kyc_status,
-        u1_0.password_hash,
-        u1_0.phone_verified,
-        u1_0.status,
-        u1_0.updated_at,
-        u1_0.version 
-    from
-        users u1_0 
-    where
-        u1_0.email=?
-Hibernate: 
-    select
-        r1_0.user_id,
-        r1_1.id,
-        r1_1.name 
-    from
-        user_roles r1_0 
-    join
-        roles r1_1 
-            on r1_1.id=r1_0.role_id 
-    where
-        r1_0.user_id=?
-]]></system-out>
-  </testcase>
-  <testcase name="contextLoads" classname="com.example.sportsbook.SportsbookApplicationTests" time="0.003"/>
-  <testcase name="registrationWorksWithValidData" classname="com.example.sportsbook.SportsbookApplicationTests" time="0.137">
+  <testcase name="depositIncreasesBalance" classname="com.example.sportsbook.wallet.WalletIntegrationTests" time="0.225">
     <system-out><![CDATA[Hibernate: 
     select
         u1_0.id,
@@ -470,9 +254,151 @@ Hibernate:
         (user_id, role_id) 
     values
         (?, ?)
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        we1_0.id,
+        we1_0.amount,
+        we1_0.balance_after,
+        we1_0.created_at,
+        we1_0.idempotency_key,
+        we1_0.reference_id,
+        we1_0.reference_type,
+        we1_0.type,
+        we1_0.wallet_id 
+    from
+        wallet_entries we1_0 
+    where
+        we1_0.idempotency_key=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
+Hibernate: 
+    insert 
+    into
+        wallet_entries
+        (amount, balance_after, created_at, idempotency_key, reference_id, reference_type, type, wallet_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        wallets 
+    set
+        available_balance=?,
+        currency=?,
+        reserved_balance=?,
+        user_id=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
 ]]></system-out>
   </testcase>
-  <testcase name="adminEndpointForbiddenForPlayer" classname="com.example.sportsbook.SportsbookApplicationTests" time="0.106">
+  <testcase name="newUserHasEmptyWallet" classname="com.example.sportsbook.wallet.WalletIntegrationTests" time="0.186">
     <system-out><![CDATA[Hibernate: 
     select
         u1_0.id,
@@ -491,6 +417,51 @@ Hibernate:
         u1_0.email=?
 Hibernate: 
     select
+        r1_0.id,
+        r1_0.name 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        users
+        (created_at, email, email_verified, kyc_status, password_hash, phone_verified, status, updated_at, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        wallets
+        (available_balance, currency, reserved_balance, user_id, version, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
         r1_0.user_id,
         r1_1.id,
         r1_1.name 
@@ -529,6 +500,515 @@ Hibernate:
             on r1_1.id=r1_0.role_id 
     where
         r1_0.user_id=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
+]]></system-out>
+  </testcase>
+  <testcase name="depositIsIdempotent" classname="com.example.sportsbook.wallet.WalletIntegrationTests" time="0.197">
+    <system-out><![CDATA[Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.name 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        users
+        (created_at, email, email_verified, kyc_status, password_hash, phone_verified, status, updated_at, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        wallets
+        (available_balance, currency, reserved_balance, user_id, version, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        we1_0.id,
+        we1_0.amount,
+        we1_0.balance_after,
+        we1_0.created_at,
+        we1_0.idempotency_key,
+        we1_0.reference_id,
+        we1_0.reference_type,
+        we1_0.type,
+        we1_0.wallet_id 
+    from
+        wallet_entries we1_0 
+    where
+        we1_0.idempotency_key=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
+Hibernate: 
+    insert 
+    into
+        wallet_entries
+        (amount, balance_after, created_at, idempotency_key, reference_id, reference_type, type, wallet_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        wallets 
+    set
+        available_balance=?,
+        currency=?,
+        reserved_balance=?,
+        user_id=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        we1_0.id,
+        we1_0.amount,
+        we1_0.balance_after,
+        we1_0.created_at,
+        we1_0.idempotency_key,
+        we1_0.reference_id,
+        we1_0.reference_type,
+        we1_0.type,
+        we1_0.wallet_id 
+    from
+        wallet_entries we1_0 
+    where
+        we1_0.idempotency_key=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
+]]></system-out>
+  </testcase>
+  <testcase name="withdrawDecreasesBalance" classname="com.example.sportsbook.wallet.WalletIntegrationTests" time="0.202">
+    <system-out><![CDATA[Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.name 
+    from
+        roles r1_0 
+    where
+        r1_0.name=?
+Hibernate: 
+    insert 
+    into
+        users
+        (created_at, email, email_verified, kyc_status, password_hash, phone_verified, status, updated_at, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        wallets
+        (available_balance, currency, reserved_balance, user_id, version, id) 
+    values
+        (?, ?, ?, ?, ?, default)
+Hibernate: 
+    insert 
+    into
+        user_roles
+        (user_id, role_id) 
+    values
+        (?, ?)
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        we1_0.id,
+        we1_0.amount,
+        we1_0.balance_after,
+        we1_0.created_at,
+        we1_0.idempotency_key,
+        we1_0.reference_id,
+        we1_0.reference_type,
+        we1_0.type,
+        we1_0.wallet_id 
+    from
+        wallet_entries we1_0 
+    where
+        we1_0.idempotency_key=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
+Hibernate: 
+    insert 
+    into
+        wallet_entries
+        (amount, balance_after, created_at, idempotency_key, reference_id, reference_type, type, wallet_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        wallets 
+    set
+        available_balance=?,
+        currency=?,
+        reserved_balance=?,
+        user_id=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        we1_0.id,
+        we1_0.amount,
+        we1_0.balance_after,
+        we1_0.created_at,
+        we1_0.idempotency_key,
+        we1_0.reference_id,
+        we1_0.reference_type,
+        we1_0.type,
+        we1_0.wallet_id 
+    from
+        wallet_entries we1_0 
+    where
+        we1_0.idempotency_key=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
+Hibernate: 
+    insert 
+    into
+        wallet_entries
+        (amount, balance_after, created_at, idempotency_key, reference_id, reference_type, type, wallet_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+Hibernate: 
+    update
+        wallets 
+    set
+        available_balance=?,
+        currency=?,
+        reserved_balance=?,
+        user_id=?,
+        version=? 
+    where
+        id=? 
+        and version=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.email_verified,
+        u1_0.kyc_status,
+        u1_0.password_hash,
+        u1_0.phone_verified,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.version 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+Hibernate: 
+    select
+        w1_0.id,
+        w1_0.available_balance,
+        w1_0.currency,
+        w1_0.reserved_balance,
+        w1_0.user_id,
+        w1_0.version 
+    from
+        wallets w1_0 
+    where
+        w1_0.user_id=?
 ]]></system-out>
   </testcase>
 </testsuite>

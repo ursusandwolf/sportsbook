@@ -25,3 +25,15 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/repository/RoleRepository.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/repository/UserRepository.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/user/service/UserService.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/api/WalletController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/api/dto/DepositRequest.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/api/dto/WalletResponse.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/api/dto/WithdrawalRequest.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/exception/InsufficientFundsException.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/exception/WalletNotFoundException.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/model/Wallet.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/model/WalletEntry.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/model/WalletEntryType.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/repository/WalletEntryRepository.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/repository/WalletRepository.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/wallet/service/WalletService.java
