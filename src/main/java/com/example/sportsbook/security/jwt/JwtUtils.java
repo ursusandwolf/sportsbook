@@ -16,10 +16,10 @@ import java.util.function.Function;
 public class JwtUtils {
 
     // В продакшене этот ключ должен быть длиной минимум 256 бит (32 байта)
-    @Value("${app.jwt.secret:dGhpcy1pcy1hLXZlcnktc2VjcmV0LWtleS1mb3Itand0LXNwb3J0c2Jvb2stcHJvamVjdC1tdXN0LWJlLWxvbmctZW5vdWdo}")
+    @Value("${app.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${app.jwt.expiration-ms:900000}") // 15 минут
+    @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
 
     public String generateToken(SecurityUser userDetails) {
@@ -27,6 +27,16 @@ public class JwtUtils {
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String generateMfaToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("mfa", true)
+                .issuedAt(new Date())
+                .expiration(new Date((new Date()).getTime() + 300000)) // 5 минут
                 .signWith(getSigningKey())
                 .compact();
     }

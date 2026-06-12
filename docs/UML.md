@@ -70,3 +70,28 @@ classDiagram
     WalletService ..> Wallet
     WalletService ..> WalletEntry
 ```
+
+## Multi-Factor Authentication Flow
+Detailed sequence diagrams and logic can be found in [MFA_FLOW.md](./MFA_FLOW.md).
+
+## Updated Security Flow (with MFA)
+
+```text
+1. Credentials Phase:
+HTTP Login Request (email, password)
+    ↓
+AuthenticationManager (DB check)
+    ↓
+MFA Enabled? ── YES ──→ Return 202 Accepted + mfaToken
+    ↓ NO
+Return 200 OK + Access JWT
+
+2. Verification Phase (if MFA enabled):
+HTTP Verify-2FA Request (code, mfaToken)
+    ↓
+JwtUtils (validates mfaToken)
+    ↓
+MfaService (validates 6-digit code)
+    ↓
+Return 200 OK + Final Access JWT
+```

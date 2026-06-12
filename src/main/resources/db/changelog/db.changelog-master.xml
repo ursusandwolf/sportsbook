@@ -11,4 +11,5 @@
     <include file="db/changelog/migrations/003-add-expired-user.xml"/>
     <include file="db/changelog/migrations/004-add-admin-user.xml"/>
     <include file="db/changelog/migrations/005-create-wallet-and-ledger.xml"/>
+    <include file="db/changelog/migrations/007-add-2fa-to-users.xml"/>
 </databaseChangeLog>

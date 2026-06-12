@@ -19,6 +19,27 @@
 *.tar.gz
 *.rar
 
+# IDEs and Editors
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+*.swp
+*.swo
+
+# Build and Target
+target/
+build/
+bin/
+
+# Local configuration and secrets
+.env
+.env.local
+src/main/resources/application-local.yml
+src/main/resources/application-local.properties
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*

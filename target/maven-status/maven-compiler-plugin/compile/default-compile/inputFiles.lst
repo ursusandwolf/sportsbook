@@ -1,8 +1,12 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/SportsbookApplication.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/AuthController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/MfaController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/RegistrationController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/LoginRequest.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/LoginResponse.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/MfaSetupResponse.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/MfaVerificationRequest.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/service/MfaService.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/api/HealthController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/ErrorResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/GlobalExceptionHandler.java

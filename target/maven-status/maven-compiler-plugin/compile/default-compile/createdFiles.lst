@@ -1,11 +1,14 @@
 com/example/sportsbook/auth/api/dto/LoginResponse.class
 com/example/sportsbook/user/api/dto/RegistrationRequest.class
 com/example/sportsbook/common/exception/GlobalExceptionHandler.class
+com/example/sportsbook/auth/api/dto/LoginResponse$LoginResponseBuilder.class
 com/example/sportsbook/user/api/dto/UserResponse$UserResponseBuilder.class
 com/example/sportsbook/wallet/api/dto/WithdrawalRequest.class
 com/example/sportsbook/wallet/model/Wallet.class
+com/example/sportsbook/auth/service/MfaService.class
 com/example/sportsbook/user/model/Role.class
 com/example/sportsbook/user/model/Role$RoleBuilder.class
+com/example/sportsbook/auth/api/dto/MfaSetupResponse.class
 com/example/sportsbook/user/api/dto/UserResponse.class
 com/example/sportsbook/user/api/dto/RegistrationResponse$RegistrationResponseBuilder.class
 com/example/sportsbook/wallet/service/WalletService.class
@@ -15,6 +18,8 @@ com/example/sportsbook/user/api/AdminUserController.class
 com/example/sportsbook/wallet/repository/WalletRepository.class
 com/example/sportsbook/user/repository/UserRepository.class
 com/example/sportsbook/user/model/UserStatus.class
+com/example/sportsbook/auth/api/dto/MfaVerificationRequest.class
+com/example/sportsbook/auth/api/MfaController.class
 com/example/sportsbook/security/config/SecurityConfig.class
 com/example/sportsbook/user/repository/RoleRepository.class
 com/example/sportsbook/auth/api/RegistrationController.class

@@ -18,6 +18,9 @@ spring:
 
 app:
   version: 0.0.1
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 900000 # 15 minutes
 
 management:
   endpoints:
