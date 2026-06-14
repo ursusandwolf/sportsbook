@@ -71,6 +71,35 @@ classDiagram
     WalletService ..> WalletEntry
 ```
 
+## Sportsbook Domain Model
+
+```mermaid
+classDiagram
+    class Sport {
+        -String name
+    }
+
+    class SportEvent {
+        -String name
+        -OffsetDateTime startsAt
+        -EventStatus status
+    }
+
+    class Market {
+        -MarketType marketType
+        -MarketStatus status
+    }
+
+    class Selection {
+        -String name
+        -BigDecimal odds
+    }
+
+    Sport "1" *-- "many" SportEvent
+    SportEvent "1" *-- "many" Market
+    Market "1" *-- "many" Selection
+```
+
 ## Multi-Factor Authentication Flow
 Detailed sequence diagrams and logic can be found in [MFA_FLOW.md](./MFA_FLOW.md).
 

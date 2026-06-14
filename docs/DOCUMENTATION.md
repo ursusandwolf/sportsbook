@@ -31,7 +31,28 @@ The project follows a **Modular Monolith** pattern with **package-by-feature** s
 ### `auth`
 - **Endpoints**: `/api/auth/login` for JWT issuance, `/api/auth/register` for new user creation.
 
+### `wallet`
+- **Wallet**: Stores current `availableBalance` and `reservedBalance`. Uses `@Version` for optimistic locking.
+- **WalletEntry**: A ledger entry. Once created, it cannot be modified or deleted.
+- **Idempotency**: All financial operations require an `idempotencyKey` to prevent duplicate processing.
+- **Atomic Operations**: `WalletService` ensures atomicity between balance updates and ledger creation.
+
+### `sports` & `market`
+- **Sport**: High-level category (e.g., Football, Basketball).
+- **SportEvent**: A specific match. Tracks participants and start time.
+- **Market**: A betting opportunity (e.g., "Match Winner"). Linked to an event.
+- **Selection**: A specific outcome (e.g., "Home Win"). Contains the `odds`.
+- **EventStatus**: `SCHEDULED`, `LIVE`, `SUSPENDED`, `FINISHED`, `CANCELLED`.
+- **MarketStatus**: `OPEN`, `SUSPENDED`, `CLOSED`, `SETTLED`, `VOID`.
+- **Security**: Public read access to the line; restricted write access for `ROLE_TRADER` and `ROLE_ADMIN`.
+
 ## Database Schema
 - `users`: Core user data, password hashes, and statuses.
 - `roles`: Authority names (ROLE_PLAYER, etc.).
 - `user_roles`: Many-to-many join table.
+- `wallets`: Available and reserved balances for players.
+- `wallet_entries`: Immutable ledger for financial auditing.
+- `sports`: Sport categories.
+- `sport_events`: Match data and status.
+- `markets`: Betting markets for events.
+- `selections`: Possible outcomes and odds.

@@ -11,19 +11,14 @@
 - **Iteration 5**: Method-level security. Added `SecurityUtils` for user context access and applied `@PreAuthorize` on admin endpoints.
 - **Iteration 6**: JWT Authentication. Implemented stateless authentication using JSON Web Tokens. Added `/api/auth/login` endpoint and `JwtAuthenticationFilter`.
 
-## [0.0.2] - 2026-06-12
-
-### Fixed
-- **Security P1**: `JwtAuthenticationFilter` now checks user status (`isEnabled`, `isAccountNonLocked`, `isAccountNonExpired`) before authenticating a request with JWT.
-- **Performance**: Optimized JWT parsing in `JwtAuthenticationFilter` by combining validation and claim extraction.
+## [0.0.3] - 2026-06-14
 
 ### Added
-- **Iteration 7**: Wallet and Immutable Ledger.
-    - Persistent `Wallet` entity with `availableBalance` and `reservedBalance`.
-    - `WalletEntry` (ledger) for auditing all financial transactions.
-    - Optimistic locking using `@Version` to prevent race conditions.
-    - Idempotency support for financial operations using `idempotencyKey`.
-    - `WalletService` with atomic deposit and fund reservation logic.
-    - Automatic wallet creation upon user registration.
-    - `WalletController` for balance checks and deposits.
-    - Integration tests for wallet operations and idempotency.
+- **Iteration 8**: Events and Markets.
+    - Sportsbook domain foundation: `Sport`, `SportEvent`, `Market`, and `Selection` entities.
+    - Lifecycle management for events and markets (`EventStatus`, `MarketStatus`).
+    - Admin APIs for Traders and Admins to manage the betting line.
+    - Public API for players to view available events and markets.
+    - Liquibase migrations for the new domain schema.
+    - Integration tests for event/market creation and public visibility.
+    - Security configuration update to allow public access to the betting line.

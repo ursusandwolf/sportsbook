@@ -1,8 +1,8 @@
 # Project Context: Sportsbook
 
 ## Status
-- **Current Phase**: Iteration 7 Complete
-- **Last Update**: 2026-06-12
+- **Current Phase**: Iteration 8 Complete
+- **Last Update**: 2026-06-14
 
 ## Project Goal
 Create a learning-focused Sportsbook backend with a strong emphasis on Spring Security, financial integrity, and anti-fraud mechanisms.
@@ -13,6 +13,7 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
 - **Security**: 
     - Layer 2.1 implemented.
     - Authentication: JWT (JSON Web Token).
+    - MFA: TOTP supported (Aerogear).
     - User Store: Database-backed (JPA + CustomUserDetailsService).
     - Roles: ROLE_PLAYER, ROLE_SUPPORT, ROLE_RISK_ANALYST, ROLE_TRADER, ROLE_ADMIN.
     - User Status Enforcement: Checked during JWT authentication.
@@ -20,8 +21,10 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
     - `common`: Health, Exception handling.
     - `user`: Entities, Repositories, Profile API.
     - `security`: SecurityFilterChain, UserDetails implementation, JWT.
-    - `auth`: Registration, Login.
+    - `auth`: Registration, Login, MFA.
     - `wallet`: Wallet management, immutable ledger, atomic updates.
+    - `sports`: Sport, SportEvent management.
+    - `market`: Market and Selection management.
 
 ## Roadmap & Pending Items
 - [x] **Iteration 3**: PasswordEncoder hardening and User Statuses (Locked/Disabled).
@@ -29,4 +32,5 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
 - [x] **Iteration 5**: Current user context and method-level security.
 - [x] **Iteration 6**: JWT implementation.
 - [x] **Iteration 7**: Wallet and immutable ledger.
-- [ ] **Iteration 8**: Events and markets.
+- [x] **Iteration 8**: Events and markets.
+- [ ] **Iteration 9**: Single bet.
