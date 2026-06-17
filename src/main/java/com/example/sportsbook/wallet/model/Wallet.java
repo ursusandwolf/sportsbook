@@ -29,6 +29,9 @@ public class Wallet {
     @Column(name = "reserved_balance", nullable = false)
     private BigDecimal reservedBalance;
 
+    @Column(name = "bonus_balance", nullable = false)
+    private BigDecimal bonusBalance;
+
     @Column(nullable = false, length = 3)
     private String currency;
 
@@ -36,6 +39,6 @@ public class Wallet {
     private Long version;
 
     public BigDecimal getTotalBalance() {
-        return availableBalance.add(reservedBalance);
+        return availableBalance.add(reservedBalance).add(bonusBalance);
     }
 }

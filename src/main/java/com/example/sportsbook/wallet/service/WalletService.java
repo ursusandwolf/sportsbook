@@ -34,6 +34,7 @@ public class WalletService {
                 .user(user)
                 .availableBalance(zero())
                 .reservedBalance(zero())
+                .bonusBalance(zero())
                 .currency("USD")
                 .build());
     }

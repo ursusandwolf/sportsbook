@@ -1,7 +1,7 @@
 # Project Context: Sportsbook
 
 ## Status
-- **Current Phase**: Iteration 11 Complete
+- **Current Phase**: Iteration 12 Complete
 - **Last Update**: 2026-06-17
 
 ## Project Goal
@@ -38,4 +38,5 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
 - [x] **Iteration 8**: Events and markets.
 - [x] **Iteration 9**: Single bet.
 - [x] **Iteration 10**: Settlement.
-- [ ] **Iteration 11**: Responsible Gaming.
+- [x] **Iteration 11**: Responsible Gaming.
+- [x] **Iteration 12**: Bonus campaigns.

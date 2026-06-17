@@ -1,19 +1,17 @@
 # Changelog
 
-## [Iteration 11] - 2026-06-17
+## [Iteration 12] - 2026-06-17
 ### Added
-- Responsible Gaming module for player protection.
-- `SelfExclusion` and `UserLimit` entities with JPA repositories.
-- `ResponsibleGamingService` for real-time limit validation and self-exclusion management.
-- `ResponsibleGamingController` for player-facing safety settings API.
-- Liquibase migrations for `self_exclusions` and `user_limits` tables.
-- Integration tests for limit enforcement and self-exclusion blocking logic.
+- Bonus module for promotional campaigns.
+- `BonusCampaign` and `UserBonus` entities and repositories.
+- `BonusService` to handle bonus issuance and balance tracking.
+- `BonusController` for players and `AdminBonusController` for administration.
+- Liquibase migration adding `bonus_balance` to `wallets` table and creating bonus tables.
+- Integration test `BonusIntegrationTests` verifying bonus issuance and balance updates.
 
 ### Changed
-- `WalletService` integrated with `ResponsibleGamingService` to block deposits and bet reservations for self-excluded users.
-- `BetService` integrated with `ResponsibleGamingService` to enforce stake limits.
-- `SecurityUser` updated to return `isEnabled=true` for `SELF_EXCLUDED` users, allowing them to withdraw funds.
-- `UserService` and `SecurityUtils` updated with utility methods for finding users and getting current IDs.
+- `Wallet` entity updated with `bonusBalance` field.
+- `WalletService.createWallet` updated to initialize `bonusBalance` to zero.
 
 ## [Iteration 10] - 2026-06-17
 ### Added
