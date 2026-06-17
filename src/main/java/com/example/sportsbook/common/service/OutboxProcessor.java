@@ -6,6 +6,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.List;
 @Slf4j
 public class OutboxProcessor {
 
+    private static final int BATCH_SIZE = 100;
     private final OutboxEventRepository outboxEventRepository;
     private final Counter processedEventsCounter;
     private final Timer processingTimer;
@@ -31,9 +33,10 @@ public class OutboxProcessor {
     @Transactional
     public void processPendingEvents() {
         processingTimer.record(() -> {
-            List<OutboxEvent> pendingEvents = outboxEventRepository.findAll().stream()
-                    .filter(event -> event.getStatus() == OutboxEvent.OutboxStatus.PENDING)
-                    .toList();
+            List<OutboxEvent> pendingEvents = outboxEventRepository.findByStatus(
+                    OutboxEvent.OutboxStatus.PENDING, 
+                    PageRequest.of(0, BATCH_SIZE)
+            );
 
             for (OutboxEvent event : pendingEvents) {
                 log.info("Processing event: {}", event.getEventType());
