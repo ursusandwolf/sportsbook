@@ -1,17 +1,17 @@
 # Changelog
 
-## [Iteration 12] - 2026-06-17
+## [Iteration 13] - 2026-06-17
 ### Added
-- Bonus module for promotional campaigns.
-- `BonusCampaign` and `UserBonus` entities and repositories.
-- `BonusService` to handle bonus issuance and balance tracking.
-- `BonusController` for players and `AdminBonusController` for administration.
-- Liquibase migration adding `bonus_balance` to `wallets` table and creating bonus tables.
-- Integration test `BonusIntegrationTests` verifying bonus issuance and balance updates.
+- Device Identification module for fraud detection infrastructure.
+- `Device` and `UserDeviceLink` entities and repositories.
+- `DeviceService` to extract device fingerprint (User-Agent, Accept-Language, IP).
+- `DeviceIdentificationFilter` to automatically capture device signals on authenticated requests.
+- Liquibase migration adding `devices` and `user_device_links` tables.
+- `DeviceIntegrationTests` to verify device signal collection.
 
 ### Changed
-- `Wallet` entity updated with `bonusBalance` field.
-- `WalletService.createWallet` updated to initialize `bonusBalance` to zero.
+- `SecurityConfig` updated to include `DeviceIdentificationFilter` after `JwtAuthenticationFilter`.
+
 
 ## [Iteration 10] - 2026-06-17
 ### Added

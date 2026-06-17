@@ -18,4 +18,5 @@
     <include file="db/changelog/migrations/011-create-audit-events.xml"/>
     <include file="db/changelog/migrations/012-create-responsible-gaming-tables.xml"/>
     <include file="db/changelog/migrations/013-create-bonus-tables.xml"/>
+    <include file="db/changelog/migrations/014-create-device-tables.xml"/>
 </databaseChangeLog>
