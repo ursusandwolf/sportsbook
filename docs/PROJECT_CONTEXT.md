@@ -1,45 +1,27 @@
 # Project Context: Sportsbook
 
 ## Status
-- **Current Phase**: Iteration 14 Complete
-- **Last Update**: 2026-06-17
+- **Current Phase**: Iteration 25 Complete
+- **Last Update**: 2026-06-18
 
 ## Project Goal
-Create a learning-focused Sportsbook backend with a strong emphasis on Spring Security, financial integrity, and anti-fraud mechanisms.
+Create a modular monolith Sportsbook backend emphasizing Spring Security, financial integrity via an immutable ledger, and multi-layered anti-fraud protection.
 
 ## System State
-- **Core**: Spring Boot 3.4.0, Java 21.
-- **Database**: PostgreSQL (Production), H2 (Test). Migrations managed by Liquibase.
+- **Core**: Spring Boot 3.4.0, Java 21, Redis, PostgreSQL.
 - **Security**: 
-    - Layer 2.1 implemented.
-    - Authentication: JWT (JSON Web Token).
-    - MFA: TOTP supported (Aerogear).
-    - User Store: Database-backed (JPA + CustomUserDetailsService).
-    - Roles: ROLE_PLAYER, ROLE_SUPPORT, ROLE_RISK_ANALYST, ROLE_TRADER, ROLE_ADMIN.
-    - User Status Enforcement: Checked during JWT authentication and before business operations.
+    - JWT-based authentication.
+    - TOTP-based 2FA.
+    - CORS configured for `localhost:3000`.
+    - Traceability via `TraceIdFilter`.
 - **Modules**: 
-    - `common`: Health, Exception handling.
-    - `user`: Entities, Repositories, Profile API.
-    - `security`: SecurityFilterChain, UserDetails implementation, JWT.
-    - `auth`: Registration, Login, MFA.
-    - `wallet`: Wallet management, immutable ledger, atomic updates.
-    - `sports`: Sport, SportEvent management.
-    - `market`: Market and Selection management.
-    - `betting`: Single bet placement and lifecycle.
-    - `settlement`: Idempotent bet settlement and payouts.
-    - `audit`: Immutable audit log of critical actions.
+    - Full modular monolith architecture (`audit`, `auth`, `betting`, `bonus`, `common`, `fraud`, `market`, `payment`, `responsiblegaming`, `security`, `settlement`, `sports`, `user`, `wallet`).
+- **Observability**:
+    - Spring Boot Actuator (health, info, metrics, prometheus enabled).
 
 ## Roadmap & Pending Items
-- [x] **Iteration 3**: PasswordEncoder hardening and User Statuses (Locked/Disabled).
-- [x] **Iteration 4**: User Registration with validation.
-- [x] **Iteration 5**: Current user context and method-level security.
-- [x] **Iteration 6**: JWT implementation.
-- [x] **Iteration 7**: Wallet and immutable ledger.
-- [x] **Iteration 8**: Events and markets.
-- [x] **Iteration 9**: Single bet.
-- [x] **Iteration 10**: Settlement.
-- [x] **Iteration 11**: Responsible Gaming.
-- [x] **Iteration 12**: Bonus campaigns.
-- [x] **Iteration 13**: Device/session/network signals.
-- [x] **Iteration 14**: Payment fingerprints.
-- [ ] **Iteration 15**: FraudRule engine. <-- NEXT STEP
+- [x] Iterations 1-22: Core Domain, Fraud, Case Mgmt, Security.
+- [x] Iteration 23: Redis Velocity Counters.
+- [x] Iteration 24: Event-driven Outbox pattern.
+- [x] Iteration 25: Observability and Hardening.
+- [ ] Iteration 26: Production hardening (PII masking, deeper metrics, event-driven integration completion).

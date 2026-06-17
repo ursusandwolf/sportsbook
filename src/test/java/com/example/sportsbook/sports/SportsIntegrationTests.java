@@ -147,6 +147,6 @@ class SportsIntegrationTests {
         mockMvc.perform(post("/api/admin/sports/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createEventRequest)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }
