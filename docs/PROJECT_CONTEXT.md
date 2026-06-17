@@ -1,7 +1,7 @@
 # Project Context: Sportsbook
 
 ## Status
-- **Current Phase**: Iteration 9 Complete
+- **Current Phase**: Iteration 10 Complete
 - **Last Update**: 2026-06-17
 
 ## Project Goal
@@ -26,6 +26,8 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
     - `sports`: Sport, SportEvent management.
     - `market`: Market and Selection management.
     - `betting`: Single bet placement and lifecycle.
+    - `settlement`: Idempotent bet settlement and payouts.
+    - `audit`: Immutable audit log of critical actions.
 
 ## Roadmap & Pending Items
 - [x] **Iteration 3**: PasswordEncoder hardening and User Statuses (Locked/Disabled).
@@ -35,4 +37,5 @@ Create a learning-focused Sportsbook backend with a strong emphasis on Spring Se
 - [x] **Iteration 7**: Wallet and immutable ledger.
 - [x] **Iteration 8**: Events and markets.
 - [x] **Iteration 9**: Single bet.
-- [ ] **Iteration 10**: Settlement.
+- [x] **Iteration 10**: Settlement.
+- [ ] **Iteration 11**: Responsible Gaming.

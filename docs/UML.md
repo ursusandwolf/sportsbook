@@ -1,149 +1,58 @@
-# UML Diagrams
+# UML Diagrams (Pseudographic)
 
-## User & Security Pattern
-
-```mermaid
-classDiagram
-    class UserDetails {
-        <<interface>>
-        +getAuthorities()
-        +getPassword()
-        +getUsername()
-    }
-
-    class SecurityUser {
-        -User user
-        +getAuthorities()
-        +getUser()
-    }
-
-    class SecurityUtils {
-        <<static>>
-        +getCurrentUser() Optional~SecurityUser~
-    }
-
-    class User {
-        -Long id
-        -String email
-        -String passwordHash
-        -UserStatus status
-        -Set~Role~ roles
-    }
-
-    class Role {
-        -Long id
-        -RoleName name
-    }
-
-    UserDetails <|.. SecurityUser
-    SecurityUser o-- User
-    User "1" *-- "many" Role
-    SecurityUtils ..> SecurityUser
-```
-
-## Wallet & Ledger Pattern
-
-```mermaid
-classDiagram
-    class Wallet {
-        -BigDecimal availableBalance
-        -BigDecimal reservedBalance
-        -Long version
-        +getTotalBalance()
-    }
-
-    class WalletEntry {
-        -WalletEntryType type
-        -BigDecimal amount
-        -BigDecimal balanceAfter
-        -String idempotencyKey
-    }
-
-    class WalletService {
-        +createWallet(User)
-        +deposit(userId, amount, key)
-        +reserveFunds(userId, amount, refType, refId, key)
-    }
-
-    Wallet "1" *-- "many" WalletEntry
-    Wallet o-- User
-    WalletService ..> Wallet
-    WalletService ..> WalletEntry
-```
-
-## Sportsbook Domain Model
-
-```mermaid
-classDiagram
-    class Sport {
-        -String name
-    }
-
-    class SportEvent {
-        -String name
-        -OffsetDateTime startsAt
-        -EventStatus status
-    }
-
-    class Market {
-        -MarketType marketType
-        -MarketStatus status
-    }
-
-    class Selection {
-        -String name
-        -BigDecimal odds
-    }
-
-    Sport "1" *-- "many" SportEvent
-    SportEvent "1" *-- "many" Market
-    Market "1" *-- "many" Selection
-```
-
-## Betting Pattern
-
-```mermaid
-classDiagram
-    class Bet {
-        -BigDecimal stake
-        -BigDecimal oddsAtPlacement
-        -BigDecimal potentialPayout
-        -BetStatus status
-        -OffsetDateTime placedAt
-    }
-
-    class BetService {
-        +placeBet(User, PlaceBetRequest)
-    }
-
-    Bet o-- User
-    Bet o-- Selection
-    BetService ..> Bet
-    BetService ..> Selection
-    BetService ..> WalletService
-```
-
-## Multi-Factor Authentication Flow
-Detailed sequence diagrams and logic can be found in [MFA_FLOW.md](./MFA_FLOW.md).
-
-## Updated Security Flow (with MFA)
-
+### Settlement Pattern
 ```text
-1. Credentials Phase:
-HTTP Login Request (email, password)
-    ↓
-AuthenticationManager (DB check)
-    ↓
-MFA Enabled? ── YES ──→ Return 202 Accepted + mfaToken
-    ↓ NO
-Return 200 OK + Access JWT
+[Trader/Admin] -> [SettlementController] -> [SettlementService]
+                                                   |
+                                                   +-> [BetRepository] (Update status/settledAt)
+                                                   |
+                                                   +-> [WalletService] (Update balances/ledger)
+                                                   |
+                                                   +-> [AuditService] (Log event)
+```
 
-2. Verification Phase (if MFA enabled):
-HTTP Verify-2FA Request (code, mfaToken)
-    ↓
-JwtUtils (validates mfaToken)
-    ↓
-MfaService (validates 6-digit code)
-    ↓
-Return 200 OK + Final Access JWT
+### Betting Pattern
+```text
+[Player] -> [BetController] -> [BetService]
+                                    |
+                                    +-> [SportsService] (Market/Odds Check)
+                                    |
+                                    +-> [WalletService] (Reserve Funds)
+                                    |
+                                    +-> [BetRepository] (Save Bet)
+```
+
+### Wallet Operation Pattern (Immutable Ledger)
+```text
+[Service] -> [WalletService]
+                  |
+                  v
+       [Transaction Boundary]
+          |   1. Load Wallet (Optimistic Lock)
+          |   2. Validate Balance
+          |   3. Update available/reserved
+          |   4. Create WalletEntry (Ledger)
+          |   5. Save Wallet (Version++)
+       [/Transaction Boundary]
+```
+
+### MFA Flow Pattern
+```text
+[Player] -> [Login (Credentials)] -> [202 Accepted + mfaToken]
+[Player] -> [Verify (mfaToken + TOTP Code)] -> [200 OK + JWT]
+```
+
+### Modular Monolith structure
+```text
+com.example.sportsbook
+├── auth (Registration, MFA)
+├── security (FilterChain, JWT, Principal)
+├── user (User, Roles, Status)
+├── wallet (Balance, Ledger, Atomic updates)
+├── sports (Sports, Events, Line management)
+├── market (Markets, Selections, Odds)
+├── betting (Bet Slip, Placement)
+├── settlement (Payout, Void, Idempotency)
+├── audit (Immutable Event Log)
+└── common (Health, Global Exceptions)
 ```

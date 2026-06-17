@@ -1,36 +1,89 @@
 # Changelog
 
-## [0.0.1] - 2026-06-11
-
+## [Iteration 10] - 2026-06-17
 ### Added
-- **Iteration 0**: Project skeleton with Spring Boot, Maven, PostgreSQL, and Liquibase. Added `GET /api/public/health`.
-- **Iteration 1**: Initial Spring Security setup with HTTP Basic and in-memory users (`player`, `support`).
-- **Iteration 2**: Dynamic user management. Persistent `User` and `Role` entities in PostgreSQL. Custom `UserDetailsService` to load users from the database. Added seed data via Liquibase.
-- **Iteration 3**: Password hardening with BCrypt. Implemented account status checks (SUSPENDED, PENDING) and expiration logic (updatedAt > 365 days).
-- **Iteration 4**: User Registration API. Implemented `RegistrationRequest` DTO with Bean Validation (email, password complexity, 18+ age check). Added Global Exception Handling for validation and business errors.
-- **Iteration 5**: Method-level security. Added `SecurityUtils` for user context access and applied `@PreAuthorize` on admin endpoints.
-- **Iteration 6**: JWT Authentication. Implemented stateless authentication using JSON Web Tokens. Added `/api/auth/login` endpoint and `JwtAuthenticationFilter`.
+- `settlement` module for bet outcome management.
+- `SettlementService` with support for WON, LOST, VOID, and CANCELLED statuses.
+- `SettlementController` for admin/trader settlement operations.
+- `audit` module for immutable event logging.
+- `AuditService` and `AuditEvent` entity with persistence.
+- Liquibase migrations for `settled_at` column in `bets` and `audit_events` table.
+- New integration tests in `SettlementIntegrationTests`.
 
-## [0.0.3] - 2026-06-14
+### Changed
+- `WalletService` updated with idempotent `settleWin`, `settleLoss`, and `settleRefund` methods.
+- `WalletService.execute` modified to allow zero amounts (required for `BET_LOSS`).
+- `SecurityUser` updated with `getId()` for easier access to user identity in audit logs.
+- `Bet` entity updated with `settledAt` field.
 
+## [Iteration 9] - 2026-06-17
 ### Added
-- **Iteration 8**: Events and Markets.
-    - Sportsbook domain foundation: `Sport`, `SportEvent`, `Market`, and `Selection` entities.
-    - Lifecycle management for events and markets (`EventStatus`, `MarketStatus`).
-    - Admin APIs for Traders and Admins to manage the betting line.
-    - Public API for players to view available events and markets.
-    - Liquibase migrations for the new domain schema.
-    - Integration tests for event/market creation and public visibility.
-    - Security configuration update to allow public access to the betting line.
+- `betting` module for single bet placement.
+- `Bet` entity with status tracking (ACCEPTED, PENDING, etc.).
+- `BetService` coordinating bet placement with wallet reservation.
+- `BetController` for player-facing betting API.
+- Liquibase migration for `bets` table with financial constraints.
+- `BettingIntegrationTests` verifying placement, validation, and fund reservation.
 
-## [0.0.4] - 2026-06-17
+### Changed
+- `WalletService` added `reserveFunds` method with optimistic locking.
+- `GlobalExceptionHandler` updated to map `IllegalStateException` to HTTP 422.
 
+## [Iteration 8] - 2026-06-17
 ### Added
-- **Iteration 9**: Single Bet.
-    - `Bet` entity and `BetStatus` enum.
-    - `BetService` for atomic bet placement logic.
-    - Business validation: User status (ACTIVE), Market status (OPEN), and Odds verification.
-    - Integration with `WalletService` for fund reservation (`BET_RESERVE`).
-    - `BetController` with `ROLE_PLAYER` protection.
-    - Liquibase migration for the `bets` table.
-    - `BettingIntegrationTests` covering successful placement, odds change failure, and insufficient funds failure.
+- `sports` module: `Sport`, `SportEvent` entities and management APIs.
+- `market` module: `Market`, `Selection` entities and odds management.
+- Liquibase migrations for sports, events, markets, and selections.
+- Integration tests for sports and market management.
+
+## [Iteration 7] - 2026-06-17
+### Added
+- `wallet` module: `Wallet` and `WalletEntry` (ledger).
+- Immutable ledger pattern for financial operations.
+- Optimistic locking on `Wallet` to prevent race conditions.
+- Idempotency support for wallet operations.
+- Integration tests for deposits and concurrent reservations.
+
+## [Iteration 6.5] - 2026-06-17
+### Added
+- MFA integration: TOTP (Google Authenticator) support.
+- Two-step login flow: credentials -> 202 Accepted + mfaToken -> verify TOTP -> final JWT.
+- `MfaService` for secret generation and verification.
+- `MfaIntegrationTests`.
+
+## [Iteration 6] - 2026-06-17
+### Added
+- JWT authentication: Stateless login with `Bearer` tokens.
+- `JwtUtils`, `JwtAuthenticationFilter`, and login endpoint.
+- `SportsbookApplicationTests` verified context loading.
+
+## [Iteration 5] - 2026-06-17
+### Added
+- `@PreAuthorize` on controller methods.
+- `SecurityUtils` for accessing current user principal.
+- `/api/users/me` and `/api/admin/users` endpoints.
+
+## [Iteration 4] - 2026-06-17
+### Added
+- `RegistrationController` and `RegistrationRequest` DTO.
+- `UserService` for handling user creation and validation.
+- Liquibase migration 001 for users and roles.
+
+## [Iteration 3] - 2026-06-17
+### Added
+- `BCryptPasswordEncoder` for secure password storage.
+- User Status checks in `SecurityUser`.
+
+## [Iteration 2] - 2026-06-17
+### Added
+- JPA-backed `UserDetailsService`.
+- `User`, `Role` entities.
+
+## [Iteration 1] - 2026-06-17
+### Added
+- Basic `SecurityFilterChain` with HTTP Basic.
+
+## [Iteration 0] - 2026-06-17
+### Added
+- Initial project structure.
+- Health check endpoint.

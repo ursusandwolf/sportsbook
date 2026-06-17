@@ -1,4 +1,7 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/SportsbookApplication.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/audit/model/AuditEvent.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/audit/repository/AuditEventRepository.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/audit/service/AuditService.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/AuthController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/MfaController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/RegistrationController.java
@@ -7,6 +10,13 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/MfaSetupResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/api/dto/MfaVerificationRequest.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/auth/service/MfaService.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/betting/api/BetController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/betting/api/dto/BetResponse.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/betting/api/dto/PlaceBetRequest.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/betting/model/Bet.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/betting/model/BetStatus.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/betting/repository/BetRepository.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/betting/service/BetService.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/api/HealthController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/ErrorResponse.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/common/exception/GlobalExceptionHandler.java
@@ -26,6 +36,9 @@
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/config/SecurityConfig.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/jwt/JwtAuthenticationFilter.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/security/jwt/JwtUtils.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/settlement/api/SettlementController.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/settlement/api/dto/SettlementRequest.java
+/Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/settlement/service/SettlementService.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/sports/api/AdminSportsController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/sports/api/SportsController.java
 /Users/alex/IdeaProjects/sportsbook/src/main/java/com/example/sportsbook/sports/api/dto/CreateEventRequest.java

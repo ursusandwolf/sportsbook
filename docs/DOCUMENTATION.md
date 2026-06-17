@@ -1,69 +1,41 @@
-# Technical Documentation
+# Technical Documentation: Sportsbook
 
 ## Architecture
-The project follows a **Modular Monolith** pattern with **package-by-feature** structure.
+Modular monolith following "package-by-feature" structure.
 
-### Security Layers
-1. **Spring Security**: Authentication and URL/Method authorization (Current Focus).
-2. **Object-level Authorization**: Ownership checks (Upcoming).
-3. **Business Validation**: Rules and limits (Upcoming).
-4. **Fraud Decision**: Anti-fraud engine (Upcoming).
+## Security
+Four levels of protection:
+1. **Spring Security**: Authentication and Role-based authorization.
+2. **Object-level Authorization**: Ownership checks (e.g., wallet belongs to user).
+3. **Business Validation**: Domain rules (e.g., market open, odds valid).
+4. **Fraud Decision**: Risk engine and policy checks (Iteration 15+).
 
-## Modules
+## Wallet & Ledger
+- **Wallet**: Stores `availableBalance` and `reservedBalance`. Uses Hibernate Optimistic Locking (`@Version`).
+- **WalletEntry**: Immutable ledger record for every balance change.
+- **Transactions**: Atomic updates ensuring `available + reserved` consistency.
 
-### `common`
-- **Error Handling**: `GlobalExceptionHandler` provides a standardized `ErrorResponse` JSON.
-- **Health**: `/api/public/health` for basic liveness check.
+## Betting
+Single bet placement involves:
+1. User status check (ACTIVE).
+2. Market status check (OPEN).
+3. Odds version validation.
+4. Wallet fund reservation (BET_RESERVE entry).
+5. Bet creation (ACCEPTED status).
 
-### `user`
-- **Entities**: `User`, `Role`.
-- **Statuses**: `UserStatus` (ACTIVE, SUSPENDED, etc.), `KycStatus`.
-- **Persistence**: `UserRepository` (Spring Data JPA).
+## Settlement
+Settlement is the process of resolving a bet outcome. Supported outcomes:
+- **WON**: Payout credited to available balance. `reservedBalance` decreased by stake. `WIN_PAYOUT` ledger entry.
+- **LOST**: `reservedBalance` decreased by stake. `BET_LOSS` ledger entry (amount 0.00).
+- **VOID / CANCELLED**: Stake returned to available balance. `reservedBalance` decreased by stake. `REFUND` ledger entry.
 
-### `security`
-- **Authentication**: JWT (JSON Web Token) (Layer 2.1). Stateless sessions.
-- **JWT**: `JwtUtils` for generation/validation, `JwtAuthenticationFilter` for request processing.
-- **UserDetails**: `SecurityUser` wraps the `User` entity to bridge with Spring Security.
-- **Service**: `CustomUserDetailsService` loads users by email.
-- **Utils**: `SecurityUtils` provides static access to the currently authenticated `SecurityUser`.
-- **Method Security**: `@EnableMethodSecurity` enabled; `@PreAuthorize` used for role-based endpoint protection.
+All settlement operations are idempotent using a generated key: `settle-{betId}-{outcome}`.
 
-### `auth`
-- **Endpoints**: `/api/auth/login` for JWT issuance, `/api/auth/register` for new user creation.
+## Audit
+The system maintains an immutable audit log of critical actions:
+- Bet placement and settlement.
+- Wallet operations.
+- Admin configuration changes.
+- Fraud and risk decisions (future).
 
-### `wallet`
-- **Wallet**: Stores current `availableBalance` and `reservedBalance`. Uses `@Version` for optimistic locking.
-- **WalletEntry**: A ledger entry. Once created, it cannot be modified or deleted.
-- **Idempotency**: All financial operations require an `idempotencyKey` to prevent duplicate processing.
-- **Atomic Operations**: `WalletService` ensures atomicity between balance updates and ledger creation.
-
-### `sports` & `market`
-- **Sport**: High-level category (e.g., Football, Basketball).
-- **SportEvent**: A specific match. Tracks participants and start time.
-- **Market**: A betting opportunity (e.g., "Match Winner"). Linked to an event.
-- **Selection**: A specific outcome (e.g., "Home Win"). Contains the `odds`.
-- **EventStatus**: `SCHEDULED`, `LIVE`, `SUSPENDED`, `FINISHED`, `CANCELLED`.
-- **MarketStatus**: `OPEN`, `SUSPENDED`, `CLOSED`, `SETTLED`, `VOID`.
-- **Security**: Public read access to the line; restricted write access for `ROLE_TRADER` and `ROLE_ADMIN`.
-
-### `betting`
-- **Bet**: Records a player's stake on a specific selection.
-- **BetStatus**: `PENDING`, `ACCEPTED`, `WON`, `LOST`, `VOID`, `CANCELLED`.
-- **Placement Flow**:
-    1. Validate `UserStatus` is `ACTIVE`.
-    2. Validate `MarketStatus` is `OPEN`.
-    3. Validate `odds` match the player's expectation.
-    4. Call `WalletService.reserveFunds()` (Layer 2.3 check).
-    5. Save `Bet` in `ACCEPTED` status.
-
-## Database Schema
-- `users`: Core user data, password hashes, and statuses.
-- `roles`: Authority names (ROLE_PLAYER, etc.).
-- `user_roles`: Many-to-many join table.
-- `wallets`: Available and reserved balances for players.
-- `wallet_entries`: Immutable ledger for financial auditing.
-- `sports`: Sport categories.
-- `sport_events`: Match data and status.
-- `markets`: Betting markets for events.
-- `selections`: Possible outcomes and odds.
-- `bets`: Player bets with stake, odds, and status.
+Audit events record the actor, action, subject, details, and timestamp.

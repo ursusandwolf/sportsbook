@@ -63,6 +63,32 @@ public class WalletService {
         });
     }
 
+    @Transactional
+    public void settleWin(Long userId, BigDecimal stake, BigDecimal payout, String refT, String refId, String key) {
+        execute(userId, payout, key, WalletEntryType.WIN_PAYOUT, refT, refId, (w, a) -> {
+            w.setAvailableBalance(w.getAvailableBalance().add(a));
+            w.setReservedBalance(w.getReservedBalance().subtract(stake.setScale(SCALE, ROUNDING_MODE)));
+            return a;
+        });
+    }
+
+    @Transactional
+    public void settleLoss(Long userId, BigDecimal stake, String refT, String refId, String key) {
+        execute(userId, BigDecimal.ZERO, key, WalletEntryType.BET_LOSS, refT, refId, (w, a) -> {
+            w.setReservedBalance(w.getReservedBalance().subtract(stake.setScale(SCALE, ROUNDING_MODE)));
+            return BigDecimal.ZERO.setScale(SCALE, ROUNDING_MODE);
+        });
+    }
+
+    @Transactional
+    public void settleRefund(Long userId, BigDecimal stake, String refT, String refId, String key) {
+        execute(userId, stake, key, WalletEntryType.REFUND, refT, refId, (w, a) -> {
+            w.setAvailableBalance(w.getAvailableBalance().add(a));
+            w.setReservedBalance(w.getReservedBalance().subtract(a));
+            return a;
+        });
+    }
+
     /**
      * Универсальный метод для выполнения финансовых операций.
      * @param action принимает (кошелек, масштабированная сумма), возвращает сумму для записи в Ledger.
@@ -70,7 +96,7 @@ public class WalletService {
     private void execute(Long userId, BigDecimal amount, String key, WalletEntryType type, String refT, String refId, 
                          FinancialAction action) {
         BigDecimal scaled = amount.setScale(SCALE, ROUNDING_MODE);
-        if (scaled.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Amount must be positive");
+        if (scaled.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("Amount must be non-negative");
         if (key != null && walletEntryRepository.findByIdempotencyKey(key).isPresent()) return;
 
         Wallet wallet = walletRepository.findByUserId(userId).orElseThrow(() -> new WalletNotFoundException(userId));

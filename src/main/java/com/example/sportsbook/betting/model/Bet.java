@@ -45,6 +45,9 @@ public class Bet {
     @Column(name = "placed_at", nullable = false)
     private OffsetDateTime placedAt;
 
+    @Column(name = "settled_at")
+    private OffsetDateTime settledAt;
+
     @Version
     @Column(nullable = false)
     private Long version;
