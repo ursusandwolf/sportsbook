@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="017-create-risk-tables" author="alex">
+        <createTable tableName="risk_assessments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="subject_user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="score" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="decision" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="policy_version" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assessed_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="risk_assessment_rules">
+            <column name="assessment_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_risk_assessment" references="risk_assessments(id)"/>
+            </column>
+            <column name="rule_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="weight" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="risk_assessments" indexName="idx_risk_assessments_user_id">
+            <column name="subject_user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

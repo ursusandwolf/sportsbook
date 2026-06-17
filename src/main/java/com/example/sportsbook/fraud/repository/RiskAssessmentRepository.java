@@ -1,0 +1,7 @@
+package com.example.sportsbook.fraud.repository;
+
+import com.example.sportsbook.fraud.model.RiskAssessment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, Long> {
+}

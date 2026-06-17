@@ -12,6 +12,8 @@ import com.example.sportsbook.responsiblegaming.service.ResponsibleGamingService
 import com.example.sportsbook.user.model.User;
 import com.example.sportsbook.user.model.UserStatus;
 import com.example.sportsbook.wallet.service.WalletService;
+import com.example.sportsbook.common.service.OutboxService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -29,6 +32,9 @@ public class BetService {
     private final SelectionRepository selectionRepository;
     private final WalletService walletService;
     private final ResponsibleGamingService responsibleGamingService;
+    private final OutboxService outboxService;
+    private final ObjectMapper objectMapper;
+
 
     @Transactional
     public BetResponse placeBet(User user, PlaceBetRequest request) {
@@ -75,6 +81,17 @@ public class BetService {
                 .build();
 
         Bet savedBet = betRepository.save(bet);
+
+        try {
+            String payload = objectMapper.writeValueAsString(Map.of(
+                "betId", savedBet.getId(),
+                "userId", user.getId(),
+                "stake", savedBet.getStake()
+            ));
+            outboxService.saveEvent("BET_PLACED", payload);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save outbox event", e);
+        }
 
         return mapToResponse(savedBet);
     }

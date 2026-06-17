@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="018-create-fraud-links-table" author="alex">
+        <createTable tableName="fraud_links">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="left_user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="right_user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="link_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="strength" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="evidence_count" type="INTEGER"/>
+            <column name="first_detected_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_detected_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="fraud_links" indexName="idx_fraud_links_users">
+            <column name="left_user_id"/>
+            <column name="right_user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
