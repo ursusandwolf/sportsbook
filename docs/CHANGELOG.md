@@ -22,3 +22,15 @@
     - Liquibase migrations for the new domain schema.
     - Integration tests for event/market creation and public visibility.
     - Security configuration update to allow public access to the betting line.
+
+## [0.0.4] - 2026-06-17
+
+### Added
+- **Iteration 9**: Single Bet.
+    - `Bet` entity and `BetStatus` enum.
+    - `BetService` for atomic bet placement logic.
+    - Business validation: User status (ACTIVE), Market status (OPEN), and Odds verification.
+    - Integration with `WalletService` for fund reservation (`BET_RESERVE`).
+    - `BetController` with `ROLE_PLAYER` protection.
+    - Liquibase migration for the `bets` table.
+    - `BettingIntegrationTests` covering successful placement, odds change failure, and insufficient funds failure.

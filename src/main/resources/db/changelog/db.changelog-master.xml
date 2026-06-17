@@ -13,4 +13,5 @@
     <include file="db/changelog/migrations/005-create-wallet-and-ledger.xml"/>
     <include file="db/changelog/migrations/007-add-2fa-to-users.xml"/>
     <include file="db/changelog/migrations/008-create-sports-events-and-markets.xml"/>
+    <include file="db/changelog/migrations/009-create-bets.xml"/>
 </databaseChangeLog>

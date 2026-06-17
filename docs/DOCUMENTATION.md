@@ -46,6 +46,16 @@ The project follows a **Modular Monolith** pattern with **package-by-feature** s
 - **MarketStatus**: `OPEN`, `SUSPENDED`, `CLOSED`, `SETTLED`, `VOID`.
 - **Security**: Public read access to the line; restricted write access for `ROLE_TRADER` and `ROLE_ADMIN`.
 
+### `betting`
+- **Bet**: Records a player's stake on a specific selection.
+- **BetStatus**: `PENDING`, `ACCEPTED`, `WON`, `LOST`, `VOID`, `CANCELLED`.
+- **Placement Flow**:
+    1. Validate `UserStatus` is `ACTIVE`.
+    2. Validate `MarketStatus` is `OPEN`.
+    3. Validate `odds` match the player's expectation.
+    4. Call `WalletService.reserveFunds()` (Layer 2.3 check).
+    5. Save `Bet` in `ACCEPTED` status.
+
 ## Database Schema
 - `users`: Core user data, password hashes, and statuses.
 - `roles`: Authority names (ROLE_PLAYER, etc.).
@@ -56,3 +66,4 @@ The project follows a **Modular Monolith** pattern with **package-by-feature** s
 - `sport_events`: Match data and status.
 - `markets`: Betting markets for events.
 - `selections`: Possible outcomes and odds.
+- `bets`: Player bets with stake, odds, and status.

@@ -100,6 +100,29 @@ classDiagram
     Market "1" *-- "many" Selection
 ```
 
+## Betting Pattern
+
+```mermaid
+classDiagram
+    class Bet {
+        -BigDecimal stake
+        -BigDecimal oddsAtPlacement
+        -BigDecimal potentialPayout
+        -BetStatus status
+        -OffsetDateTime placedAt
+    }
+
+    class BetService {
+        +placeBet(User, PlaceBetRequest)
+    }
+
+    Bet o-- User
+    Bet o-- Selection
+    BetService ..> Bet
+    BetService ..> Selection
+    BetService ..> WalletService
+```
+
 ## Multi-Factor Authentication Flow
 Detailed sequence diagrams and logic can be found in [MFA_FLOW.md](./MFA_FLOW.md).
 
