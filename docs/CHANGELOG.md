@@ -1,5 +1,13 @@
 # Changelog
 
+## [Iteration 14] - 2026-06-17
+### Added
+- `payment` module for handling payment instrument fingerprinting.
+- `PaymentInstrument` and `WithdrawalDestination` models.
+- Fingerprint generation service using SHA-256.
+- Liquibase migration `015-create-payment-tables.xml`.
+- `PaymentIntegrationTests` verifying registration of instruments.
+
 ## [Iteration 13] - 2026-06-17
 ### Added
 - Device Identification module for fraud detection infrastructure.
