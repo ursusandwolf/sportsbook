@@ -8,6 +8,7 @@ import com.example.sportsbook.betting.repository.BetRepository;
 import com.example.sportsbook.market.model.MarketStatus;
 import com.example.sportsbook.market.model.Selection;
 import com.example.sportsbook.market.repository.SelectionRepository;
+import com.example.sportsbook.responsiblegaming.service.ResponsibleGamingService;
 import com.example.sportsbook.user.model.User;
 import com.example.sportsbook.user.model.UserStatus;
 import com.example.sportsbook.wallet.service.WalletService;
@@ -27,6 +28,7 @@ public class BetService {
     private final BetRepository betRepository;
     private final SelectionRepository selectionRepository;
     private final WalletService walletService;
+    private final ResponsibleGamingService responsibleGamingService;
 
     @Transactional
     public BetResponse placeBet(User user, PlaceBetRequest request) {
@@ -34,6 +36,10 @@ public class BetService {
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new IllegalStateException("User account is not active: " + user.getStatus());
         }
+
+        // 1a. Responsible Gaming Check
+        BigDecimal stake = request.stake().setScale(2, RoundingMode.HALF_UP);
+        responsibleGamingService.validateStake(user.getId(), stake);
 
         // 2. Проверка исхода и рынка
         Selection selection = selectionRepository.findById(request.selectionId())
@@ -50,7 +56,6 @@ public class BetService {
 
         // 4. Резервирование средств (атомарно внутри транзакции)
         String idempotencyKey = "BET_RESERVE_" + UUID.randomUUID();
-        BigDecimal stake = request.stake().setScale(2, RoundingMode.HALF_UP);
         
         // В реальной системе referenceId должен быть ID ставки, но ставка еще не создана.
         // Можно использовать временный UUID или сначала сохранить ставку в PENDING.

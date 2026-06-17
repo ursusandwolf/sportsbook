@@ -1,5 +1,20 @@
 # Changelog
 
+## [Iteration 11] - 2026-06-17
+### Added
+- Responsible Gaming module for player protection.
+- `SelfExclusion` and `UserLimit` entities with JPA repositories.
+- `ResponsibleGamingService` for real-time limit validation and self-exclusion management.
+- `ResponsibleGamingController` for player-facing safety settings API.
+- Liquibase migrations for `self_exclusions` and `user_limits` tables.
+- Integration tests for limit enforcement and self-exclusion blocking logic.
+
+### Changed
+- `WalletService` integrated with `ResponsibleGamingService` to block deposits and bet reservations for self-excluded users.
+- `BetService` integrated with `ResponsibleGamingService` to enforce stake limits.
+- `SecurityUser` updated to return `isEnabled=true` for `SELF_EXCLUDED` users, allowing them to withdraw funds.
+- `UserService` and `SecurityUtils` updated with utility methods for finding users and getting current IDs.
+
 ## [Iteration 10] - 2026-06-17
 ### Added
 - `settlement` module for bet outcome management.

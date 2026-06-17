@@ -1,6 +1,8 @@
 package com.example.sportsbook.wallet.service;
 
+import com.example.sportsbook.responsiblegaming.service.ResponsibleGamingService;
 import com.example.sportsbook.user.model.User;
+import com.example.sportsbook.user.model.UserStatus;
 import com.example.sportsbook.wallet.exception.InsufficientFundsException;
 import com.example.sportsbook.wallet.exception.WalletNotFoundException;
 import com.example.sportsbook.wallet.model.Wallet;
@@ -14,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class WalletService {
 
     private final WalletRepository walletRepository;
     private final WalletEntryRepository walletEntryRepository;
+    private final ResponsibleGamingService responsibleGamingService;
 
     @Transactional
     public Wallet createWallet(User user) {
@@ -38,6 +40,7 @@ public class WalletService {
 
     @Transactional
     public void deposit(Long userId, BigDecimal amount, String key) {
+        responsibleGamingService.validateDeposit(userId, amount);
         execute(userId, amount, key, WalletEntryType.DEPOSIT, null, null, (w, a) -> {
             w.setAvailableBalance(w.getAvailableBalance().add(a));
             return a; // Ledger amount: positive
@@ -100,6 +103,14 @@ public class WalletService {
         if (key != null && walletEntryRepository.findByIdempotencyKey(key).isPresent()) return;
 
         Wallet wallet = walletRepository.findByUserId(userId).orElseThrow(() -> new WalletNotFoundException(userId));
+
+        // Responsible Gaming Check
+        if (wallet.getUser().getStatus() == UserStatus.SELF_EXCLUDED) {
+            if (type == WalletEntryType.DEPOSIT || type == WalletEntryType.BET_RESERVE) {
+                throw new IllegalStateException("Action not allowed during self-exclusion: " + type);
+            }
+        }
+
         BigDecimal ledgerAmount = action.apply(wallet, scaled);
         walletRepository.save(wallet);
 

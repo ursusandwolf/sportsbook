@@ -13,4 +13,10 @@ public class SecurityUtils {
         }
         return Optional.empty();
     }
+
+    public static Long getCurrentUserId() {
+        return getCurrentUser()
+                .map(SecurityUser::getId)
+                .orElseThrow(() -> new IllegalStateException("No authenticated user found"));
+    }
 }
