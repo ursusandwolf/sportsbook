@@ -1,5 +1,11 @@
 # Changelog
 
+## [Iteration 26] - 2026-06-18
+### Added
+- Observability: Added Micrometer metrics (`Counter`, `Timer`) to `OutboxProcessor` to track event throughput and processing latency.
+### Changed
+- Event Processing: Refactored `OutboxProcessor` to use batch processing (size 100) via `Pageable` instead of `findAll()` to improve performance and scalability.
+
 ## [Iteration 25] - 2026-06-18
 ### Added
 - Observability: Actuator endpoints (prometheus, metrics, health, info) enabled.
