@@ -1,6 +1,7 @@
 package com.example.sportsbook.payment.api;
 
 import com.example.sportsbook.payment.model.Withdrawal;
+import com.example.sportsbook.payment.api.dto.WithdrawalResponse;
 import com.example.sportsbook.payment.service.WithdrawalService;
 import com.example.sportsbook.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,11 @@ public class WithdrawalController {
     private final WithdrawalService withdrawalService;
 
     @PostMapping
-    public ResponseEntity<Withdrawal> requestWithdrawal(@AuthenticationPrincipal SecurityUser user,
+    public ResponseEntity<WithdrawalResponse> requestWithdrawal(@AuthenticationPrincipal SecurityUser user,
                                                         @RequestParam BigDecimal amount,
                                                         @RequestParam String destinationFingerprint) {
-        return ResponseEntity.ok(withdrawalService.requestWithdrawal(user.getUser(), amount, destinationFingerprint));
+        Withdrawal withdrawal = withdrawalService.requestWithdrawal(user.getUser(), amount, destinationFingerprint);
+        return ResponseEntity.ok(new WithdrawalResponse(withdrawal.getId(), withdrawal.getAmount(),
+                withdrawal.getStatus(), withdrawal.getCreatedAt()));
     }
 }

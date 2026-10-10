@@ -40,7 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt = authHeader.substring(7);
         final Claims claims = jwtUtils.validateAndGetClaims(jwt);
 
-        if (claims != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (claims != null && !claims.containsKey("mfa")
+                && SecurityContextHolder.getContext().getAuthentication() == null) {
             String userEmail = jwtUtils.getUsernameFromClaims(claims);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 

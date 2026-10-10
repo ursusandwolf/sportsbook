@@ -10,6 +10,14 @@ Four levels of protection:
 3. **Business Validation**: Domain rules (e.g., market open, odds valid).
 4. **Fraud Decision**: Risk engine and policy checks (Iteration 15+).
 
+MFA challenge tokens (`mfa: true`) are rejected by the access JWT filter. Only registration, login and MFA verification are public auth endpoints; MFA setup and enable require an access JWT. Verification rechecks account status and that MFA remains enabled. Actuator health is public without dependency details; other Actuator endpoints require ADMIN.
+
+## Withdrawals
+
+`POST /api/withdrawals` accepts `amount` and `destinationFingerprint` query parameters. It requires verified KYC, a positive amount with at most two decimal places and sufficient funds. Risk decisions allow a PENDING request, hold it as HELD_FOR_REVIEW, or reject it before funds are reserved. Reservations use WITHDRAWAL_RESERVE ledger entries and remain available to SELF_EXCLUDED users. The response DTO exposes only id, amount, status and createdAt.
+
+The legacy `POST /api/wallets/withdraw` is denied to prevent bypassing these checks. External payout execution and held-request resolution remain pending implementation.
+
 ## Wallet & Ledger
 - **Wallet**: Stores `availableBalance` and `reservedBalance`. Uses Hibernate Optimistic Locking (`@Version`).
 - **WalletEntry**: Immutable ledger record for every balance change.
@@ -19,7 +27,7 @@ Four levels of protection:
 Single bet placement involves:
 1. User status check (ACTIVE).
 2. Market status check (OPEN).
-3. Odds version validation.
+3. Expected odds value validation.
 4. Wallet fund reservation (BET_RESERVE entry).
 5. Bet creation (ACCEPTED status).
 

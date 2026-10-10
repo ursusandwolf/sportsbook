@@ -25,10 +25,14 @@ public class TestConfig {
     @Bean
     public CommandLineRunner initTestData(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, SportRepository sportRepository) {
         return args -> {
-            Role adminRole = roleRepository.save(new Role(null, RoleName.ROLE_ADMIN));
-            Role playerRole = roleRepository.save(new Role(null, RoleName.ROLE_PLAYER));
+            Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
+                    .orElseGet(() -> roleRepository.save(new Role(null, RoleName.ROLE_ADMIN)));
+            Role playerRole = roleRepository.findByName(RoleName.ROLE_PLAYER)
+                    .orElseGet(() -> roleRepository.save(new Role(null, RoleName.ROLE_PLAYER)));
 
-            sportRepository.save(new Sport(null, "Football"));
+            if (sportRepository.findByName("Football").isEmpty()) {
+                sportRepository.save(new Sport(null, "Football"));
+            }
 
             User admin = User.builder()
                     .email("admin@example.com")
@@ -38,7 +42,9 @@ public class TestConfig {
                     .roles(Set.of(adminRole))
                     .createdAt(OffsetDateTime.now())
                     .build();
-            userRepository.save(admin);
+            if (userRepository.findByEmail(admin.getEmail()).isEmpty()) {
+                userRepository.save(admin);
+            }
 
             User player = User.builder()
                     .email("player@example.com")
@@ -48,7 +54,9 @@ public class TestConfig {
                     .roles(Set.of(playerRole))
                     .createdAt(OffsetDateTime.now())
                     .build();
-            userRepository.save(player);
+            if (userRepository.findByEmail(player.getEmail()).isEmpty()) {
+                userRepository.save(player);
+            }
         };
     }
 }

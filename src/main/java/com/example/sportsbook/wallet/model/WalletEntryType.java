@@ -3,6 +3,7 @@ package com.example.sportsbook.wallet.model;
 public enum WalletEntryType {
     DEPOSIT,
     WITHDRAWAL,
+    WITHDRAWAL_RESERVE,
     BET_RESERVE,
     BET_RELEASE,
     BET_LOSS,

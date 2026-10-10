@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <include file="db/changelog/db.changelog-master.xml"/>
+    <!-- Liquibase maps TEXT to CLOB on H2, while Hibernate's H2 dialect expects VARCHAR. -->
+    <changeSet id="test-h2-text-columns" author="sportsbook" dbms="h2">
+        <modifyDataType tableName="fraud_cases" columnName="reason" newDataType="VARCHAR"/>
+        <modifyDataType tableName="outbox_events" columnName="payload" newDataType="VARCHAR"/>
+    </changeSet>
+</databaseChangeLog>

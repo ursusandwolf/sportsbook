@@ -68,6 +68,16 @@ public class WalletService {
     }
 
     @Transactional
+    public void reserveWithdrawal(Long userId, BigDecimal amount, String withdrawalId, String key) {
+        execute(userId, amount, key, WalletEntryType.WITHDRAWAL_RESERVE, "WITHDRAWAL", withdrawalId, (w, a) -> {
+            if (w.getAvailableBalance().compareTo(a) < 0) throw new InsufficientFundsException("Insufficient funds");
+            w.setAvailableBalance(w.getAvailableBalance().subtract(a));
+            w.setReservedBalance(w.getReservedBalance().add(a));
+            return a.negate();
+        });
+    }
+
+    @Transactional
     public void settleWin(Long userId, BigDecimal stake, BigDecimal payout, String refT, String refId, String key) {
         execute(userId, payout, key, WalletEntryType.WIN_PAYOUT, refT, refId, (w, a) -> {
             w.setAvailableBalance(w.getAvailableBalance().add(a));

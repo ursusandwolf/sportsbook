@@ -20,4 +20,10 @@
     <include file="db/changelog/migrations/013-create-bonus-tables.xml"/>
     <include file="db/changelog/migrations/014-create-device-tables.xml"/>
     <include file="db/changelog/migrations/015-create-payment-tables.xml"/>
+    <include file="db/changelog/migrations/016-create-fraud-tables.xml"/>
+    <include file="db/changelog/migrations/017-create-risk-tables.xml"/>
+    <include file="db/changelog/migrations/018-create-fraud-links-table.xml"/>
+    <include file="db/changelog/migrations/019-create-withdrawals-table.xml"/>
+    <include file="db/changelog/migrations/020-create-fraud-cases-table.xml"/>
+    <include file="db/changelog/migrations/021-create-outbox-events-table.xml"/>
 </databaseChangeLog>

@@ -1,5 +1,18 @@
 # Changelog
 
+## Critical bug fixes - 2026-10-10
+### Fixed
+- Startup: connected Liquibase migrations 016–021 and corrected XSD locations.
+- Security: prevented MFA challenge tokens from authenticating protected requests, secured MFA setup/enable and rechecked account eligibility during MFA verification.
+- Withdrawals: disabled direct wallet withdrawal API, validated amounts and destinations, applied risk decisions, used the saved entity ID and removed user data from responses.
+- Responsible gaming: separated withdrawal reservations from bet reservations to allow verified self-excluded users to withdraw.
+- Observability: restricted metrics and health details to admins.
+- Tests: isolated H2 databases, avoided duplicate seeds and added H2 TEXT compatibility plus regression coverage.
+- Repository hygiene: removed tracked target artifacts from the Git index while retaining local build output.
+### Validation
+- JDK 21: `mvn clean verify` passed all 56 tests with no failures, errors or skips and produced the executable JAR.
+- PostgreSQL/Redis container verification remains pending; current integration checks use H2 and Redis mocks.
+
 ## [Iteration 26] - 2026-06-18
 ### Added
 - Observability: Added Micrometer metrics (`Counter`, `Timer`) to `OutboxProcessor` to track event throughput and processing latency.

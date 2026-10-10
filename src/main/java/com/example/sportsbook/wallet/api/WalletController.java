@@ -3,7 +3,6 @@ package com.example.sportsbook.wallet.api;
 import com.example.sportsbook.security.SecurityUser;
 import com.example.sportsbook.wallet.api.dto.DepositRequest;
 import com.example.sportsbook.wallet.api.dto.WalletResponse;
-import com.example.sportsbook.wallet.api.dto.WithdrawalRequest;
 import com.example.sportsbook.wallet.exception.WalletNotFoundException;
 import com.example.sportsbook.wallet.model.Wallet;
 import com.example.sportsbook.wallet.repository.WalletRepository;
@@ -41,10 +40,4 @@ public class WalletController {
         walletService.deposit(securityUser.getUser().getId(), request.amount(), request.idempotencyKey());
     }
 
-    @PostMapping("/withdraw")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('PLAYER')")
-    public void withdraw(@AuthenticationPrincipal SecurityUser securityUser, 
-                         @Valid @RequestBody WithdrawalRequest request) {
-        walletService.withdraw(securityUser.getUser().getId(), request.amount(), request.idempotencyKey());
-    }
 }

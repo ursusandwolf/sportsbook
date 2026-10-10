@@ -35,4 +35,6 @@ management:
         include: health,info,metrics,prometheus
   endpoint:
     health:
-      show-details: always
+      show-details: when_authorized
+      show-components: when_authorized
+      roles: ADMIN

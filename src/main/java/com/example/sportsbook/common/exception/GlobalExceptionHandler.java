@@ -46,6 +46,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(ErrorResponse.builder()
+                .timestamp(Instant.now()).status(HttpStatus.BAD_REQUEST.value())
+                .code("VALIDATION_ERROR").message(ex.getMessage()).path(request.getRequestURI()).build());
+    }
+
     @ExceptionHandler(InsufficientFundsException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientFundsException(InsufficientFundsException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()

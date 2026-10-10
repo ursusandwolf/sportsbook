@@ -101,7 +101,7 @@ class WalletIntegrationTests {
     }
 
     @Test
-    void withdrawDecreasesBalance() {
+    void legacyWithdrawalIsForbiddenAndLeavesBalanceUnchanged() {
         String token = registerAndLogin("withdraw_test@example.com");
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -112,16 +112,17 @@ class WalletIntegrationTests {
 
         // Withdraw
         WithdrawalRequest withdrawRequest = new WithdrawalRequest(new BigDecimal("40.00"), UUID.randomUUID().toString());
-        restTemplate.postForEntity("http://localhost:" + port + "/api/wallets/withdraw", new HttpEntity<>(withdrawRequest, headers), Void.class);
+        ResponseEntity<Void> withdrawal = restTemplate.postForEntity("http://localhost:" + port + "/api/wallets/withdraw", new HttpEntity<>(withdrawRequest, headers), Void.class);
+        assertThat(withdrawal.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
         ResponseEntity<WalletResponse> response = restTemplate.exchange(
                 "http://localhost:" + port + "/api/wallets/me", HttpMethod.GET, new HttpEntity<>(headers), WalletResponse.class);
 
-        assertThat(response.getBody().availableBalance()).isEqualByComparingTo(new BigDecimal("60.00"));
+        assertThat(response.getBody().availableBalance()).isEqualByComparingTo(new BigDecimal("100.00"));
     }
 
     @Test
-    void withdrawFailsIfInsufficientFunds() {
+    void legacyWithdrawalIsForbiddenEvenWithoutFunds() {
         String token = registerAndLogin("withdraw_fail@example.com");
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -130,7 +131,6 @@ class WalletIntegrationTests {
         ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:" + port + "/api/wallets/withdraw", 
                 new HttpEntity<>(withdrawRequest, headers), Map.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-        assertThat(response.getBody().get("code")).isEqualTo("INSUFFICIENT_FUNDS");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }

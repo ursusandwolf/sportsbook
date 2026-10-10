@@ -54,14 +54,16 @@ public class AuthController {
     @PostMapping("/verify-2fa")
     public ResponseEntity<LoginResponse> verify2fa(@Valid @RequestBody MfaVerificationRequest request) {
         Claims claims = jwtUtils.validateAndGetClaims(request.getMfaToken());
-        if (claims == null || claims.get("mfa") == null) {
+        if (claims == null || !Boolean.TRUE.equals(claims.get("mfa"))) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         String email = jwtUtils.getUsernameFromClaims(claims);
         SecurityUser userDetails = (SecurityUser) userDetailsService.loadUserByUsername(email);
 
-        if (!mfaService.verifyCode(userDetails.getUser().getMfaSecret(), request.getCode())) {
+        if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked()
+                || !userDetails.isAccountNonExpired() || !userDetails.getUser().isMfaEnabled()
+                || !mfaService.verifyCode(userDetails.getUser().getMfaSecret(), request.getCode())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
