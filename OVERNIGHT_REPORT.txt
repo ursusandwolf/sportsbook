@@ -1,0 +1,97 @@
+SportsBook — кодревʼю + нічна автоматизація
+Дата: 2026-11-02
+Автор прогону: Auto (architect + code-reviewer)
+
+================================================================================
+ВЕРДИКТ КОДРЕВʼЮ (до фіксів): ⚠ мержити після правок
+Після фіксів цієї сесії: ✅ можна продовжувати ітерацію 27 (не prod-ready)
+================================================================================
+
+Кратко:
+Модульний моноліт з сильними фінансовими інваріантами (ledger, optimistic lock, KYC/risk
+на виводі, MFA challenge). Головні ризики були: ідемпотентність ставок (серверний UUID),
+мертвий прямий withdraw у WalletService, RegistrationVelocityRule не викликався, Prometheus
+у exposure без dependency, Outbox без брокера (свідомо не чіпали — потрібне рішення людини).
+
+### Blocker (виправлено)
+1) Ставки: idempotency через UUID.randomUUID() → повтор клієнта створював нову ставку.
+   Де: BetService. Фікс: обовʼязковий idempotencyKey + UNIQUE у bets + early return.
+2) Повтор ставки при існуючому wallet key все одно створював Bet без резерву.
+   Фікс: findByIdempotencyKey перед createBet.
+
+### Major (виправлено / частково)
+3) RegistrationVelocityRule існував, але register його не викликав.
+   Фікс: UserService.register(ip) → FraudEngine(REGISTRATION); блок на REG_VELOCITY_EXCEEDED.
+4) WalletService.withdraw мертвий (немає call sites) при denyAll endpoint — видалено.
+5) Дубль reserveFunds/reserveWithdrawal — зведено до private reserve(...).
+6) micrometer-registry-prometheus додано (exposure вже був).
+7) Iteration 27 PII: AuditService → PiiMasker (email/довгі цифри).
+
+### Major (потрібне рішення людини — НЕ зроблено)
+- Повний lifecycle виводу (PSP / manual complete / release hold)
+- Реальна публікація Outbox (Kafka/Rabbit/інше)
+- Risk thresholds 30/50/70/85 — продуктові
+- Testcontainers e2e на реальному PostgreSQL/Redis
+
+### Minor / Idea
+- show-sql вимкнено в application.yml
+- RuntimeException у UserService замінено на IllegalStateException
+- docker-compose.yml додано
+- Maven Wrapper: спроба в цій сесії (див. нижче)
+
+👍 Удачно вже було: MFA claim isolation, denyAll legacy withdraw, WithdrawalResponse DTO,
+Wallet.execute шаблон, Strategy для FraudRule, SecurityRegressionTests.
+
+================================================================================
+СТАН СПРИНТІВ
+================================================================================
+[x] Iterations 1–26: core, fraud, redis velocity, outbox skeleton, observability
+[~] Iteration 27: PII masking — базово зроблено (Audit + PiiMasker)
+[ ] Далі: Outbox publisher, withdrawal completion, Testcontainers, OpenAPI
+
+================================================================================
+АРХІТЕКТУРА — АДЕКВАТНІСТЬ
+================================================================================
+Рішення: Modular Monolith + package-by-feature — адекватне для портфоліо і єдиної БД.
+Не over-engineering мікросервісами. Hexagonal не повний (нема окремих port-інтерфейсів),
+але шари api/service/repository достатні. Outbox без брокера — навчальний скелет, не prod.
+
+Документи:
+- docs/ARCHITECTURE_UML.md
+- docs/LEARNING_GUIDE.md
+- docs/AI_MAP.md
+
+================================================================================
+CLEANUP
+================================================================================
+Видалено/обʼєднано:
+- WalletService.withdraw (DEAD)
+- reserveFunds/reserveWithdrawal → спільний reserve (DUP-EXACT)
+
+Не чіпали:
+- WalletEntryType.WITHDRAWAL (знадобиться для complete payout)
+- OutboxProcessor stub (потрібен вибір брокера)
+
+================================================================================
+ТЕСТИ
+================================================================================
+Додано:
+- BettingIntegrationTests.shouldReuseExistingBetForSameIdempotencyKey
+- PiiMaskerTests
+Оновлено PlaceBetRequest у betting/settlement/responsiblegaming тестах.
+Міграція: 022-add-bet-idempotency-key.xml
+
+Результат mvn test: див. кінець файлу / TEST_RUN_OUTPUT.txt
+================================================================================
+
+TEST RESULT: see TEST_RUN_OUTPUT.txt (rerun after UTF-8 migration fix)
+
+
+================================================================================
+TEST RESULT (final)
+================================================================================
+mvn test: BUILD SUCCESS
+Tests run: 60, Failures: 0, Errors: 0, Skipped: 0
+(+4 vs previous 56: bet idempotency + 3 PiiMasker)
+Maven Wrapper: added (mvnw / mvnw.cmd)
+Full log: TEST_RUN_OUTPUT.txt

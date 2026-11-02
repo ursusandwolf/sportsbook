@@ -139,12 +139,12 @@ public class ResponsibleGamingIntegrationTests {
         restTemplate.postForEntity("/api/wallets/deposit", new HttpEntity<>(d1, headers()), Void.class);
 
         // 3. Place bet 30 (Allowed)
-        PlaceBetRequest b1 = new PlaceBetRequest(selectionId, new BigDecimal("30.00"), new BigDecimal("1.90"));
+        PlaceBetRequest b1 = new PlaceBetRequest(selectionId, new BigDecimal("30.00"), new BigDecimal("1.90"), UUID.randomUUID().toString());
         ResponseEntity<Void> r1 = restTemplate.postForEntity("/api/bets", new HttpEntity<>(b1, headers()), Void.class);
         assertThat(r1.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         // 4. Place bet 25 (Rejected: 30 + 25 = 55 > 50)
-        PlaceBetRequest b2 = new PlaceBetRequest(selectionId, new BigDecimal("25.00"), new BigDecimal("1.90"));
+        PlaceBetRequest b2 = new PlaceBetRequest(selectionId, new BigDecimal("25.00"), new BigDecimal("1.90"), UUID.randomUUID().toString());
         ResponseEntity<Object> r2 = restTemplate.postForEntity("/api/bets", new HttpEntity<>(b2, headers()), Object.class);
         assertThat(r2.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }
@@ -163,7 +163,7 @@ public class ResponsibleGamingIntegrationTests {
         assertThat(r1.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
         // 3. Try to place bet (Rejected)
-        PlaceBetRequest b1 = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), new BigDecimal("1.90"));
+        PlaceBetRequest b1 = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), new BigDecimal("1.90"), UUID.randomUUID().toString());
         ResponseEntity<Object> r2 = restTemplate.postForEntity("/api/bets", new HttpEntity<>(b1, headers()), Object.class);
         assertThat(r2.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }

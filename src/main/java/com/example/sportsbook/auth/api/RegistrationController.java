@@ -3,6 +3,7 @@ package com.example.sportsbook.auth.api;
 import com.example.sportsbook.user.api.dto.RegistrationRequest;
 import com.example.sportsbook.user.api.dto.RegistrationResponse;
 import com.example.sportsbook.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,17 @@ public class RegistrationController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationResponse register(@Valid @RequestBody RegistrationRequest request) {
-        return userService.register(request);
+    public RegistrationResponse register(
+            @Valid @RequestBody RegistrationRequest request,
+            HttpServletRequest httpRequest) {
+        return userService.register(request, clientIp(httpRequest));
+    }
+
+    private static String clientIp(HttpServletRequest request) {
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (forwarded != null && !forwarded.isBlank()) {
+            return forwarded.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

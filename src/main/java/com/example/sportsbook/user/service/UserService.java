@@ -1,5 +1,9 @@
 package com.example.sportsbook.user.service;
 
+import com.example.sportsbook.fraud.model.FraudOperation;
+import com.example.sportsbook.fraud.service.FraudContext;
+import com.example.sportsbook.fraud.service.FraudEngine;
+import com.example.sportsbook.fraud.service.FraudRuleResult;
 import com.example.sportsbook.user.api.dto.RegistrationRequest;
 import com.example.sportsbook.user.api.dto.RegistrationResponse;
 import com.example.sportsbook.user.api.dto.UserResponse;
@@ -13,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -26,6 +31,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final WalletService walletService;
+    private final FraudEngine fraudEngine;
 
     @Transactional(readOnly = true)
     public Optional<User> findById(Long id) {
@@ -33,15 +39,15 @@ public class UserService {
     }
 
     @Transactional
-    public RegistrationResponse register(RegistrationRequest request) {
+    public RegistrationResponse register(RegistrationRequest request, String ipAddress) {
         String email = request.getEmail().toLowerCase().trim();
-        
+
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("Email already registered");
+            throw new IllegalStateException("Email already registered");
         }
 
         Role playerRole = roleRepository.findByName(RoleName.ROLE_PLAYER)
-                .orElseThrow(() -> new RuntimeException("Default role not found"));
+                .orElseThrow(() -> new IllegalStateException("Default role not found"));
 
         User user = User.builder()
                 .email(email)
@@ -54,9 +60,20 @@ public class UserService {
                 .build();
 
         User savedUser = userRepository.save(user);
-
-        // Создаем кошелек для нового пользователя (Iteration 7)
         walletService.createWallet(savedUser);
+
+        List<FraudRuleResult> triggered = fraudEngine.run(FraudContext.builder()
+                .userId(savedUser.getId())
+                .operation(FraudOperation.REGISTRATION)
+                .timestamp(LocalDateTime.now())
+                .ipAddress(ipAddress)
+                .build());
+
+        boolean registrationBlocked = triggered.stream()
+                .anyMatch(result -> "REG_VELOCITY_EXCEEDED".equals(result.ruleCode()));
+        if (registrationBlocked) {
+            throw new IllegalStateException("Too many registrations from this IP");
+        }
 
         return RegistrationResponse.builder()
                 .id(savedUser.getId())
@@ -68,7 +85,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse getUserResponseByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new IllegalStateException("User not found"));
         return mapToResponse(user);
     }
 
@@ -84,7 +101,7 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new RuntimeException("User not found");
+            throw new IllegalStateException("User not found");
         }
         userRepository.deleteById(id);
     }

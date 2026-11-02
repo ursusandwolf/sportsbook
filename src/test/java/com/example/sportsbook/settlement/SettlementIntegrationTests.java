@@ -115,7 +115,7 @@ class SettlementIntegrationTests {
     @Test
     void shouldSettleWinSuccessfully() throws Exception {
         // 1. Place bet
-        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4));
+        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4), UUID.randomUUID().toString());
         String betJson = mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(placeReq)))
                 .andReturn().getResponse().getContentAsString();
@@ -143,7 +143,7 @@ class SettlementIntegrationTests {
     @Test
     void shouldSettleLossSuccessfully() throws Exception {
         // 1. Place bet
-        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4));
+        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4), UUID.randomUUID().toString());
         String betJson = mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(placeReq)))
                 .andReturn().getResponse().getContentAsString();
@@ -165,7 +165,7 @@ class SettlementIntegrationTests {
     @Test
     void shouldSettleRefundSuccessfully() throws Exception {
         // 1. Place bet
-        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4));
+        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4), UUID.randomUUID().toString());
         String betJson = mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(placeReq)))
                 .andReturn().getResponse().getContentAsString();
@@ -186,7 +186,7 @@ class SettlementIntegrationTests {
 
     @Test
     void shouldBeIdempotent() throws Exception {
-        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4));
+        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4), UUID.randomUUID().toString());
         String betJson = mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(placeReq)))
                 .andReturn().getResponse().getContentAsString();
@@ -212,7 +212,7 @@ class SettlementIntegrationTests {
 
     @Test
     void shouldFailIfAlreadySettledWithDifferentStatus() throws Exception {
-        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4));
+        PlaceBetRequest placeReq = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4), UUID.randomUUID().toString());
         String betJson = mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(placeReq)))
                 .andReturn().getResponse().getContentAsString();

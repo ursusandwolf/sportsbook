@@ -53,6 +53,17 @@ public class GlobalExceptionHandler {
                 .code("VALIDATION_ERROR").message(ex.getMessage()).path(request.getRequestURI()).build());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ErrorResponse.builder()
+                .timestamp(Instant.now())
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .code("BUSINESS_ERROR")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build());
+    }
+
     @ExceptionHandler(InsufficientFundsException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientFundsException(InsufficientFundsException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()

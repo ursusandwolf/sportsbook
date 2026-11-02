@@ -26,4 +26,5 @@
     <include file="db/changelog/migrations/019-create-withdrawals-table.xml"/>
     <include file="db/changelog/migrations/020-create-fraud-cases-table.xml"/>
     <include file="db/changelog/migrations/021-create-outbox-events-table.xml"/>
+    <include file="db/changelog/migrations/022-add-bet-idempotency-key.xml"/>
 </databaseChangeLog>

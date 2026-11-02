@@ -48,6 +48,9 @@ public class Bet {
     @Column(name = "settled_at")
     private OffsetDateTime settledAt;
 
+    @Column(name = "idempotency_key", unique = true, length = 128)
+    private String idempotencyKey;
+
     @Version
     @Column(nullable = false)
     private Long version;

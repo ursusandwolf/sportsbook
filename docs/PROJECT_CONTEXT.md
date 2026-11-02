@@ -1,8 +1,8 @@
 # Project Context: Sportsbook
 
 ## Status
-- **Current Phase**: Iteration 26 Complete
-- **Last Update**: 2026-10-10
+- **Current Phase**: Iteration 27 In Progress (PII masking started)
+- **Last Update**: 2026-11-02
 
 ## Critical bug fixes (2026-10-10)
 - Connected migrations 016–021 and corrected local XSD resolution for withdrawals and fraud cases.
@@ -38,4 +38,12 @@ Create a modular monolith Sportsbook backend emphasizing Spring Security, financ
 - [x] Iteration 24: Event-driven Outbox pattern.
 - [x] Iteration 25: Observability and Hardening.
 - [x] Iteration 26: Deeper Metrics and Event Processing.
-- [ ] Iteration 27: Production hardening (PII masking).
+- [~] Iteration 27: Production hardening (PII masking via PiiMasker in AuditService).
+- [ ] Needs human decision: Outbox broker, withdrawal completion/PSP, OpenAPI depth.
+
+## Auto fixes 2026-11-02
+- Bet client idempotency key + DB unique constraint.
+- Registration velocity fraud wiring.
+- Wallet reserve dedupe; removed dead withdraw().
+- Prometheus registry dependency; docker-compose.yml.
+- See OVERNIGHT_REPORT.txt and docs/AI_MAP.md.

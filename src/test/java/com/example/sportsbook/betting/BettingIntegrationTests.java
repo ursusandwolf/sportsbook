@@ -114,7 +114,7 @@ class BettingIntegrationTests {
 
     @Test
     void shouldPlaceBetSuccessfully() throws Exception {
-        PlaceBetRequest request = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4));
+        PlaceBetRequest request = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4), UUID.randomUUID().toString());
 
         mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
@@ -131,8 +131,31 @@ class BettingIntegrationTests {
     }
 
     @Test
+    void shouldReuseExistingBetForSameIdempotencyKey() throws Exception {
+        String key = "bet-idem-" + UUID.randomUUID();
+        PlaceBetRequest request = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), odds.setScale(4), key);
+
+        String first = mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        String second = mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        org.junit.jupiter.api.Assertions.assertEquals(first, second);
+
+        mockMvc.perform(get("/api/wallets/me").header("Authorization", "Bearer " + playerToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.availableBalance").value(90.00))
+                .andExpect(jsonPath("$.reservedBalance").value(10.00));
+    }
+
+    @Test
     void shouldFailIfOddsChanged() throws Exception {
-        PlaceBetRequest request = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), new BigDecimal("1.50"));
+        PlaceBetRequest request = new PlaceBetRequest(selectionId, new BigDecimal("10.00"), new BigDecimal("1.50"), UUID.randomUUID().toString());
 
         mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
@@ -141,7 +164,7 @@ class BettingIntegrationTests {
 
     @Test
     void shouldFailIfInsufficientFunds() throws Exception {
-        PlaceBetRequest request = new PlaceBetRequest(selectionId, new BigDecimal("1000.00"), odds.setScale(4));
+        PlaceBetRequest request = new PlaceBetRequest(selectionId, new BigDecimal("1000.00"), odds.setScale(4), UUID.randomUUID().toString());
 
         mockMvc.perform(post("/api/bets").header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))

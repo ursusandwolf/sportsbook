@@ -44,37 +44,18 @@ public class WalletService {
         responsibleGamingService.validateDeposit(userId, amount);
         execute(userId, amount, key, WalletEntryType.DEPOSIT, null, null, (w, a) -> {
             w.setAvailableBalance(w.getAvailableBalance().add(a));
-            return a; // Ledger amount: positive
-        });
-    }
-
-    @Transactional
-    public void withdraw(Long userId, BigDecimal amount, String key) {
-        execute(userId, amount, key, WalletEntryType.WITHDRAWAL, null, null, (w, a) -> {
-            if (w.getAvailableBalance().compareTo(a) < 0) throw new InsufficientFundsException("Insufficient funds");
-            w.setAvailableBalance(w.getAvailableBalance().subtract(a));
-            return a.negate(); // Ledger amount: negative
+            return a;
         });
     }
 
     @Transactional
     public void reserveFunds(Long userId, BigDecimal amount, String refT, String refId, String key) {
-        execute(userId, amount, key, WalletEntryType.BET_RESERVE, refT, refId, (w, a) -> {
-            if (w.getAvailableBalance().compareTo(a) < 0) throw new InsufficientFundsException("Insufficient funds");
-            w.setAvailableBalance(w.getAvailableBalance().subtract(a));
-            w.setReservedBalance(w.getReservedBalance().add(a));
-            return a.negate(); // Ledger amount: negative
-        });
+        reserve(userId, amount, WalletEntryType.BET_RESERVE, refT, refId, key);
     }
 
     @Transactional
     public void reserveWithdrawal(Long userId, BigDecimal amount, String withdrawalId, String key) {
-        execute(userId, amount, key, WalletEntryType.WITHDRAWAL_RESERVE, "WITHDRAWAL", withdrawalId, (w, a) -> {
-            if (w.getAvailableBalance().compareTo(a) < 0) throw new InsufficientFundsException("Insufficient funds");
-            w.setAvailableBalance(w.getAvailableBalance().subtract(a));
-            w.setReservedBalance(w.getReservedBalance().add(a));
-            return a.negate();
-        });
+        reserve(userId, amount, WalletEntryType.WITHDRAWAL_RESERVE, "WITHDRAWAL", withdrawalId, key);
     }
 
     @Transactional
@@ -103,19 +84,30 @@ public class WalletService {
         });
     }
 
-    /**
-     * Универсальный метод для выполнения финансовых операций.
-     * @param action принимает (кошелек, масштабированная сумма), возвращает сумму для записи в Ledger.
-     */
-    private void execute(Long userId, BigDecimal amount, String key, WalletEntryType type, String refT, String refId, 
+    private void reserve(Long userId, BigDecimal amount, WalletEntryType type, String refT, String refId, String key) {
+        execute(userId, amount, key, type, refT, refId, (w, a) -> {
+            if (w.getAvailableBalance().compareTo(a) < 0) {
+                throw new InsufficientFundsException("Insufficient funds");
+            }
+            w.setAvailableBalance(w.getAvailableBalance().subtract(a));
+            w.setReservedBalance(w.getReservedBalance().add(a));
+            return a.negate();
+        });
+    }
+
+    private void execute(Long userId, BigDecimal amount, String key, WalletEntryType type, String refT, String refId,
                          FinancialAction action) {
         BigDecimal scaled = amount.setScale(SCALE, ROUNDING_MODE);
-        if (scaled.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("Amount must be non-negative");
-        if (key != null && walletEntryRepository.findByIdempotencyKey(key).isPresent()) return;
+        if (scaled.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Amount must be non-negative");
+        }
+        if (key != null && walletEntryRepository.findByIdempotencyKey(key).isPresent()) {
+            return;
+        }
 
-        Wallet wallet = walletRepository.findByUserId(userId).orElseThrow(() -> new WalletNotFoundException(userId));
+        Wallet wallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new WalletNotFoundException(userId));
 
-        // Responsible Gaming Check
         if (wallet.getUser().getStatus() == UserStatus.SELF_EXCLUDED) {
             if (type == WalletEntryType.DEPOSIT || type == WalletEntryType.BET_RESERVE) {
                 throw new IllegalStateException("Action not allowed during self-exclusion: " + type);
@@ -130,7 +122,9 @@ public class WalletService {
                 .referenceType(refT).referenceId(refId).idempotencyKey(key).build());
     }
 
-    private BigDecimal zero() { return BigDecimal.ZERO.setScale(SCALE, ROUNDING_MODE); }
+    private BigDecimal zero() {
+        return BigDecimal.ZERO.setScale(SCALE, ROUNDING_MODE);
+    }
 
     @FunctionalInterface
     private interface FinancialAction {

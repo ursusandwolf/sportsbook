@@ -2,7 +2,7 @@ package com.example.sportsbook.audit.service;
 
 import com.example.sportsbook.audit.model.AuditEvent;
 import com.example.sportsbook.audit.repository.AuditEventRepository;
-import com.example.sportsbook.security.SecurityUser;
+import com.example.sportsbook.common.util.PiiMasker;
 import com.example.sportsbook.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,17 +22,17 @@ public class AuditService {
         String actorId = SecurityUtils.getCurrentUser()
                 .map(u -> u.getId().toString())
                 .orElse("SYSTEM");
-        
+
         AuditEvent event = AuditEvent.builder()
                 .actorType("USER")
                 .actorId(actorId)
                 .action(action)
                 .subjectType(subjectType)
                 .subjectId(subjectId)
-                .details(details)
+                .details(PiiMasker.mask(details))
                 .occurredAt(OffsetDateTime.now())
                 .build();
-        
+
         auditEventRepository.save(event);
     }
 }

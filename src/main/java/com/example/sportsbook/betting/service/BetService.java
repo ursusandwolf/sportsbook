@@ -5,6 +5,7 @@ import com.example.sportsbook.betting.api.dto.PlaceBetRequest;
 import com.example.sportsbook.betting.model.Bet;
 import com.example.sportsbook.betting.model.BetStatus;
 import com.example.sportsbook.betting.repository.BetRepository;
+import com.example.sportsbook.common.service.OutboxService;
 import com.example.sportsbook.market.model.MarketStatus;
 import com.example.sportsbook.market.model.Selection;
 import com.example.sportsbook.market.repository.SelectionRepository;
@@ -12,7 +13,6 @@ import com.example.sportsbook.responsiblegaming.service.ResponsibleGamingService
 import com.example.sportsbook.user.model.User;
 import com.example.sportsbook.user.model.UserStatus;
 import com.example.sportsbook.wallet.service.WalletService;
-import com.example.sportsbook.common.service.OutboxService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,19 +34,21 @@ public class BetService {
     private final OutboxService outboxService;
     private final ObjectMapper objectMapper;
 
-
     @Transactional
     public BetResponse placeBet(User user, PlaceBetRequest request) {
-        // 1. Проверка статуса игрока
+        return betRepository.findByIdempotencyKey(request.idempotencyKey())
+                .map(this::mapToResponse)
+                .orElseGet(() -> createBet(user, request));
+    }
+
+    private BetResponse createBet(User user, PlaceBetRequest request) {
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new IllegalStateException("User account is not active: " + user.getStatus());
         }
 
-        // 1a. Responsible Gaming Check
         BigDecimal stake = request.stake().setScale(2, RoundingMode.HALF_UP);
         responsibleGamingService.validateStake(user.getId(), stake);
 
-        // 2. Проверка исхода и рынка
         Selection selection = selectionRepository.findById(request.selectionId())
                 .orElseThrow(() -> new IllegalArgumentException("Selection not found"));
 
@@ -55,18 +56,14 @@ public class BetService {
             throw new IllegalStateException("Market is not open: " + selection.getMarket().getStatus());
         }
 
-        // 3. Сверка коэффициентов
         if (selection.getOdds().compareTo(request.expectedOdds()) != 0) {
-            throw new IllegalStateException("Odds have changed. Expected: " + request.expectedOdds() + ", Current: " + selection.getOdds());
+            throw new IllegalStateException(
+                    "Odds have changed. Expected: " + request.expectedOdds() + ", Current: " + selection.getOdds());
         }
 
-        // 4. Резервирование средств (атомарно внутри транзакции)
-        String idempotencyKey = "BET_RESERVE_" + UUID.randomUUID();
-        
-        // В реальной системе referenceId должен быть ID ставки, но ставка еще не создана.
-        // Можно использовать временный UUID или сначала сохранить ставку в PENDING.
-        // Для учебного проекта и упрощения: сначала резервируем, потом сохраняем ACCEPTED.
-        walletService.reserveFunds(user.getId(), stake, "BET", "TEMP_" + idempotencyKey, idempotencyKey);
+        String idempotencyKey = request.idempotencyKey();
+        String walletKey = "BET_RESERVE_" + idempotencyKey;
+        walletService.reserveFunds(user.getId(), stake, "BET", "TEMP_" + idempotencyKey, walletKey);
 
         BigDecimal potentialPayout = stake.multiply(selection.getOdds()).setScale(2, RoundingMode.HALF_UP);
 
@@ -78,15 +75,16 @@ public class BetService {
                 .potentialPayout(potentialPayout)
                 .status(BetStatus.ACCEPTED)
                 .placedAt(OffsetDateTime.now())
+                .idempotencyKey(idempotencyKey)
                 .build();
 
         Bet savedBet = betRepository.save(bet);
 
         try {
             String payload = objectMapper.writeValueAsString(Map.of(
-                "betId", savedBet.getId(),
-                "userId", user.getId(),
-                "stake", savedBet.getStake()
+                    "betId", savedBet.getId(),
+                    "userId", user.getId(),
+                    "stake", savedBet.getStake()
             ));
             outboxService.saveEvent("BET_PLACED", payload);
         } catch (Exception e) {
