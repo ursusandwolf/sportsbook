@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
+    private static final String REG_VELOCITY_RULE = "REG_VELOCITY_EXCEEDED";
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -46,10 +48,12 @@ public class UserService {
             throw new IllegalStateException("Email already registered");
         }
 
+        assertRegistrationAllowed(ipAddress);
+
         Role playerRole = roleRepository.findByName(RoleName.ROLE_PLAYER)
                 .orElseThrow(() -> new IllegalStateException("Default role not found"));
 
-        User user = User.builder()
+        User savedUser = userRepository.save(User.builder()
                 .email(email)
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .status(UserStatus.ACTIVE)
@@ -57,29 +61,30 @@ public class UserService {
                 .emailVerified(false)
                 .phoneVerified(false)
                 .roles(Set.of(playerRole))
-                .build();
-
-        User savedUser = userRepository.save(user);
-        walletService.createWallet(savedUser);
-
-        List<FraudRuleResult> triggered = fraudEngine.run(FraudContext.builder()
-                .userId(savedUser.getId())
-                .operation(FraudOperation.REGISTRATION)
-                .timestamp(LocalDateTime.now())
-                .ipAddress(ipAddress)
                 .build());
 
-        boolean registrationBlocked = triggered.stream()
-                .anyMatch(result -> "REG_VELOCITY_EXCEEDED".equals(result.ruleCode()));
-        if (registrationBlocked) {
-            throw new IllegalStateException("Too many registrations from this IP");
-        }
+        walletService.createWallet(savedUser);
 
         return RegistrationResponse.builder()
                 .id(savedUser.getId())
                 .email(savedUser.getEmail())
                 .status(savedUser.getStatus().name())
                 .build();
+    }
+
+    private void assertRegistrationAllowed(String ipAddress) {
+        List<FraudRuleResult> triggered = fraudEngine.run(FraudContext.builder()
+                .userId(null)
+                .operation(FraudOperation.REGISTRATION)
+                .timestamp(LocalDateTime.now())
+                .ipAddress(ipAddress)
+                .build());
+
+        boolean registrationBlocked = triggered.stream()
+                .anyMatch(result -> REG_VELOCITY_RULE.equals(result.ruleCode()));
+        if (registrationBlocked) {
+            throw new IllegalStateException("Too many registrations from this IP");
+        }
     }
 
     @Transactional(readOnly = true)

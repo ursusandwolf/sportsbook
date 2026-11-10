@@ -23,19 +23,22 @@ public class FraudEngine {
                 .filter(FraudRuleResult::triggered)
                 .toList();
 
-        triggered.forEach(result -> {
-            FraudSignal signal = FraudSignal.builder()
-                    .subjectUserId(context.getUserId())
-                    .type(result.type())
-                    .severity(result.severity())
-                    .weight(result.weight())
-                    .ruleCode(result.ruleCode())
-                    .evidenceReference(result.evidenceReference())
-                    .detectedAt(LocalDateTime.now())
-                    .build();
-            fraudSignalRepository.save(signal);
-        });
+        if (context.getUserId() != null) {
+            triggered.forEach(result -> persistSignal(context.getUserId(), result));
+        }
 
         return triggered;
+    }
+
+    private void persistSignal(Long userId, FraudRuleResult result) {
+        fraudSignalRepository.save(FraudSignal.builder()
+                .subjectUserId(userId)
+                .type(result.type())
+                .severity(result.severity())
+                .weight(result.weight())
+                .ruleCode(result.ruleCode())
+                .evidenceReference(result.evidenceReference())
+                .detectedAt(LocalDateTime.now())
+                .build());
     }
 }

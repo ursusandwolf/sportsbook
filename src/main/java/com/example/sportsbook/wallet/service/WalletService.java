@@ -40,86 +40,108 @@ public class WalletService {
     }
 
     @Transactional
-    public void deposit(Long userId, BigDecimal amount, String key) {
+    public void deposit(Long userId, BigDecimal amount, String idempotencyKey) {
         responsibleGamingService.validateDeposit(userId, amount);
-        execute(userId, amount, key, WalletEntryType.DEPOSIT, null, null, (w, a) -> {
-            w.setAvailableBalance(w.getAvailableBalance().add(a));
-            return a;
+        applyLedgerEntry(userId, amount, idempotencyKey, WalletEntryType.DEPOSIT, null, null, (wallet, scaledAmount) -> {
+            wallet.setAvailableBalance(wallet.getAvailableBalance().add(scaledAmount));
+            return scaledAmount;
         });
     }
 
     @Transactional
-    public void reserveFunds(Long userId, BigDecimal amount, String refT, String refId, String key) {
-        reserve(userId, amount, WalletEntryType.BET_RESERVE, refT, refId, key);
+    public void reserveFunds(Long userId, BigDecimal amount, String referenceType, String referenceId, String idempotencyKey) {
+        reserve(userId, amount, WalletEntryType.BET_RESERVE, referenceType, referenceId, idempotencyKey);
     }
 
     @Transactional
-    public void reserveWithdrawal(Long userId, BigDecimal amount, String withdrawalId, String key) {
-        reserve(userId, amount, WalletEntryType.WITHDRAWAL_RESERVE, "WITHDRAWAL", withdrawalId, key);
+    public void reserveWithdrawal(Long userId, BigDecimal amount, String withdrawalId, String idempotencyKey) {
+        reserve(userId, amount, WalletEntryType.WITHDRAWAL_RESERVE, "WITHDRAWAL", withdrawalId, idempotencyKey);
     }
 
     @Transactional
-    public void settleWin(Long userId, BigDecimal stake, BigDecimal payout, String refT, String refId, String key) {
-        execute(userId, payout, key, WalletEntryType.WIN_PAYOUT, refT, refId, (w, a) -> {
-            w.setAvailableBalance(w.getAvailableBalance().add(a));
-            w.setReservedBalance(w.getReservedBalance().subtract(stake.setScale(SCALE, ROUNDING_MODE)));
-            return a;
-        });
+    public void settleWin(Long userId, BigDecimal stake, BigDecimal payout, String referenceType, String referenceId,
+                          String idempotencyKey) {
+        BigDecimal scaledStake = scale(stake);
+        applyLedgerEntry(userId, payout, idempotencyKey, WalletEntryType.WIN_PAYOUT, referenceType, referenceId,
+                (wallet, scaledPayout) -> {
+                    wallet.setAvailableBalance(wallet.getAvailableBalance().add(scaledPayout));
+                    wallet.setReservedBalance(wallet.getReservedBalance().subtract(scaledStake));
+                    return scaledPayout;
+                });
     }
 
     @Transactional
-    public void settleLoss(Long userId, BigDecimal stake, String refT, String refId, String key) {
-        execute(userId, BigDecimal.ZERO, key, WalletEntryType.BET_LOSS, refT, refId, (w, a) -> {
-            w.setReservedBalance(w.getReservedBalance().subtract(stake.setScale(SCALE, ROUNDING_MODE)));
-            return BigDecimal.ZERO.setScale(SCALE, ROUNDING_MODE);
-        });
+    public void settleLoss(Long userId, BigDecimal stake, String referenceType, String referenceId, String idempotencyKey) {
+        BigDecimal scaledStake = scale(stake);
+        applyLedgerEntry(userId, BigDecimal.ZERO, idempotencyKey, WalletEntryType.BET_LOSS, referenceType, referenceId,
+                (wallet, ignored) -> {
+                    wallet.setReservedBalance(wallet.getReservedBalance().subtract(scaledStake));
+                    return zero();
+                });
     }
 
     @Transactional
-    public void settleRefund(Long userId, BigDecimal stake, String refT, String refId, String key) {
-        execute(userId, stake, key, WalletEntryType.REFUND, refT, refId, (w, a) -> {
-            w.setAvailableBalance(w.getAvailableBalance().add(a));
-            w.setReservedBalance(w.getReservedBalance().subtract(a));
-            return a;
-        });
+    public void settleRefund(Long userId, BigDecimal stake, String referenceType, String referenceId, String idempotencyKey) {
+        applyLedgerEntry(userId, stake, idempotencyKey, WalletEntryType.REFUND, referenceType, referenceId,
+                (wallet, scaledStake) -> {
+                    wallet.setAvailableBalance(wallet.getAvailableBalance().add(scaledStake));
+                    wallet.setReservedBalance(wallet.getReservedBalance().subtract(scaledStake));
+                    return scaledStake;
+                });
     }
 
-    private void reserve(Long userId, BigDecimal amount, WalletEntryType type, String refT, String refId, String key) {
-        execute(userId, amount, key, type, refT, refId, (w, a) -> {
-            if (w.getAvailableBalance().compareTo(a) < 0) {
+    private void reserve(Long userId, BigDecimal amount, WalletEntryType type, String referenceType, String referenceId,
+                         String idempotencyKey) {
+        applyLedgerEntry(userId, amount, idempotencyKey, type, referenceType, referenceId, (wallet, scaledAmount) -> {
+            if (wallet.getAvailableBalance().compareTo(scaledAmount) < 0) {
                 throw new InsufficientFundsException("Insufficient funds");
             }
-            w.setAvailableBalance(w.getAvailableBalance().subtract(a));
-            w.setReservedBalance(w.getReservedBalance().add(a));
-            return a.negate();
+            wallet.setAvailableBalance(wallet.getAvailableBalance().subtract(scaledAmount));
+            wallet.setReservedBalance(wallet.getReservedBalance().add(scaledAmount));
+            return scaledAmount.negate();
         });
     }
 
-    private void execute(Long userId, BigDecimal amount, String key, WalletEntryType type, String refT, String refId,
-                         FinancialAction action) {
-        BigDecimal scaled = amount.setScale(SCALE, ROUNDING_MODE);
-        if (scaled.compareTo(BigDecimal.ZERO) < 0) {
+    private void applyLedgerEntry(Long userId, BigDecimal amount, String idempotencyKey, WalletEntryType type,
+                                  String referenceType, String referenceId, BalanceMutation mutation) {
+        BigDecimal scaledAmount = scale(amount);
+        if (scaledAmount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Amount must be non-negative");
         }
-        if (key != null && walletEntryRepository.findByIdempotencyKey(key).isPresent()) {
+        if (idempotencyKey != null && walletEntryRepository.findByIdempotencyKey(idempotencyKey).isPresent()) {
             return;
         }
 
         Wallet wallet = walletRepository.findByUserId(userId)
                 .orElseThrow(() -> new WalletNotFoundException(userId));
 
-        if (wallet.getUser().getStatus() == UserStatus.SELF_EXCLUDED) {
-            if (type == WalletEntryType.DEPOSIT || type == WalletEntryType.BET_RESERVE) {
-                throw new IllegalStateException("Action not allowed during self-exclusion: " + type);
-            }
-        }
+        assertAllowedDuringSelfExclusion(wallet, type);
 
-        BigDecimal ledgerAmount = action.apply(wallet, scaled);
+        BigDecimal ledgerAmount = mutation.apply(wallet, scaledAmount);
         walletRepository.save(wallet);
 
         walletEntryRepository.save(WalletEntry.builder()
-                .wallet(wallet).type(type).amount(ledgerAmount).balanceAfter(wallet.getAvailableBalance())
-                .referenceType(refT).referenceId(refId).idempotencyKey(key).build());
+                .wallet(wallet)
+                .type(type)
+                .amount(ledgerAmount)
+                .balanceAfter(wallet.getAvailableBalance())
+                .referenceType(referenceType)
+                .referenceId(referenceId)
+                .idempotencyKey(idempotencyKey)
+                .build());
+    }
+
+    private void assertAllowedDuringSelfExclusion(Wallet wallet, WalletEntryType type) {
+        if (wallet.getUser().getStatus() != UserStatus.SELF_EXCLUDED) {
+            return;
+        }
+        if (type == WalletEntryType.DEPOSIT || type == WalletEntryType.BET_RESERVE) {
+            throw new IllegalStateException("Action not allowed during self-exclusion: " + type);
+        }
+    }
+
+    private BigDecimal scale(BigDecimal amount) {
+        return amount.setScale(SCALE, ROUNDING_MODE);
     }
 
     private BigDecimal zero() {
@@ -127,7 +149,7 @@ public class WalletService {
     }
 
     @FunctionalInterface
-    private interface FinancialAction {
+    private interface BalanceMutation {
         BigDecimal apply(Wallet wallet, BigDecimal scaledAmount);
     }
 }

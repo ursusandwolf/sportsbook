@@ -3,6 +3,7 @@ package com.example.sportsbook.common.exception;
 import com.example.sportsbook.wallet.exception.InsufficientFundsException;
 import com.example.sportsbook.wallet.exception.WalletNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,124 +16,81 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String UNEXPECTED_ERROR = "An unexpected error occurred";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex,
+                                                                   HttpServletRequest request) {
         String message = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .code("VALIDATION_ERROR")
-                .message(message)
-                .path(request.getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return error(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", message, request);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.FORBIDDEN.value())
-                .code("FORBIDDEN")
-                .message("Access denied: " + ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex,
+                                                                     HttpServletRequest request) {
+        log.warn("Access denied on {}: {}", request.getRequestURI(), ex.getMessage());
+        return error(HttpStatus.FORBIDDEN, "FORBIDDEN", "Access denied", request);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidArgument(IllegalArgumentException ex, HttpServletRequest request) {
-        return ResponseEntity.badRequest().body(ErrorResponse.builder()
-                .timestamp(Instant.now()).status(HttpStatus.BAD_REQUEST.value())
-                .code("VALIDATION_ERROR").message(ex.getMessage()).path(request.getRequestURI()).build());
+    public ResponseEntity<ErrorResponse> handleInvalidArgument(IllegalArgumentException ex,
+                                                               HttpServletRequest request) {
+        return error(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", ex.getMessage(), request);
     }
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
-                .code("BUSINESS_ERROR")
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build());
+        return error(HttpStatus.UNPROCESSABLE_ENTITY, "BUSINESS_ERROR", ex.getMessage(), request);
     }
 
     @ExceptionHandler(InsufficientFundsException.class)
-    public ResponseEntity<ErrorResponse> handleInsufficientFundsException(InsufficientFundsException ex, HttpServletRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
-                .code("INSUFFICIENT_FUNDS")
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+    public ResponseEntity<ErrorResponse> handleInsufficientFundsException(InsufficientFundsException ex,
+                                                                          HttpServletRequest request) {
+        return error(HttpStatus.UNPROCESSABLE_ENTITY, "INSUFFICIENT_FUNDS", ex.getMessage(), request);
     }
 
     @ExceptionHandler(WalletNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleWalletNotFoundException(WalletNotFoundException ex, HttpServletRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .code("WALLET_NOT_FOUND")
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    public ResponseEntity<ErrorResponse> handleWalletNotFoundException(WalletNotFoundException ex,
+                                                                       HttpServletRequest request) {
+        return error(HttpStatus.NOT_FOUND, "WALLET_NOT_FOUND", ex.getMessage(), request);
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-    public ResponseEntity<ErrorResponse> handleOptimisticLockingException(ObjectOptimisticLockingFailureException ex, HttpServletRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.CONFLICT.value())
-                .code("CONCURRENCY_ERROR")
-                .message("The data was updated by another user. Please try again.")
-                .path(request.getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    public ResponseEntity<ErrorResponse> handleOptimisticLockingException(ObjectOptimisticLockingFailureException ex,
+                                                                          HttpServletRequest request) {
+        return error(HttpStatus.CONFLICT, "CONCURRENCY_ERROR",
+                "The data was updated by another user. Please try again.", request);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.CONFLICT.value())
-                .code("DATA_INTEGRITY_ERROR")
-                .message("Database integrity violation. This could be a duplicate idempotency key.")
-                .path(request.getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
-                .timestamp(Instant.now())
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
-                .code("BUSINESS_ERROR")
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
+                                                                               HttpServletRequest request) {
+        log.warn("Data integrity violation on {}: {}", request.getRequestURI(), ex.getMostSpecificCause().getMessage());
+        return error(HttpStatus.CONFLICT, "DATA_INTEGRITY_ERROR",
+                "Database integrity violation. This could be a duplicate idempotency key.", request);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex, HttpServletRequest request) {
-        ErrorResponse error = ErrorResponse.builder()
+        log.error("Unhandled error on {}", request.getRequestURI(), ex);
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", UNEXPECTED_ERROR, request);
+    }
+
+    private ResponseEntity<ErrorResponse> error(HttpStatus status, String code, String message,
+                                                HttpServletRequest request) {
+        ErrorResponse body = ErrorResponse.builder()
                 .timestamp(Instant.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .code("INTERNAL_SERVER_ERROR")
-                .message(ex.getMessage())
+                .status(status.value())
+                .code(code)
+                .message(message)
                 .path(request.getRequestURI())
                 .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        return ResponseEntity.status(status).body(body);
     }
 }

@@ -24,26 +24,40 @@ public class SettlementService {
         Bet bet = betRepository.findById(betId)
                 .orElseThrow(() -> new IllegalArgumentException("Bet not found: " + betId));
 
-        if (bet.getStatus() != BetStatus.ACCEPTED) {
-            if (bet.getStatus() == outcome) {
-                return; // Idempotency: already settled with this outcome
-            }
-            throw new IllegalStateException("Bet is already settled with status: " + bet.getStatus());
+        if (isAlreadySettledWithSameOutcome(bet, outcome)) {
+            return;
         }
+        assertBetIsAccepted(bet);
 
-        String idempotencyKey = "settle-" + betId + "-" + outcome;
-
-        switch (outcome) {
-            case WON -> walletService.settleWin(bet.getUser().getId(), bet.getStake(), bet.getPotentialPayout(), "BET", betId.toString(), idempotencyKey);
-            case LOST -> walletService.settleLoss(bet.getUser().getId(), bet.getStake(), "BET", betId.toString(), idempotencyKey);
-            case VOID, CANCELLED -> walletService.settleRefund(bet.getUser().getId(), bet.getStake(), "BET", betId.toString(), idempotencyKey);
-            default -> throw new IllegalArgumentException("Invalid settlement outcome: " + outcome);
-        }
+        applyWalletSettlement(bet, outcome, "settle-" + betId + "-" + outcome);
 
         bet.setStatus(outcome);
         bet.setSettledAt(OffsetDateTime.now());
         betRepository.save(bet);
 
         auditService.log("BET_SETTLEMENT", "BET", betId.toString(), "Status: " + outcome);
+    }
+
+    private boolean isAlreadySettledWithSameOutcome(Bet bet, BetStatus outcome) {
+        return bet.getStatus() != BetStatus.ACCEPTED && bet.getStatus() == outcome;
+    }
+
+    private void assertBetIsAccepted(Bet bet) {
+        if (bet.getStatus() != BetStatus.ACCEPTED) {
+            throw new IllegalStateException("Bet is already settled with status: " + bet.getStatus());
+        }
+    }
+
+    private void applyWalletSettlement(Bet bet, BetStatus outcome, String idempotencyKey) {
+        Long userId = bet.getUser().getId();
+        String betId = bet.getId().toString();
+
+        switch (outcome) {
+            case WON -> walletService.settleWin(
+                    userId, bet.getStake(), bet.getPotentialPayout(), "BET", betId, idempotencyKey);
+            case LOST -> walletService.settleLoss(userId, bet.getStake(), "BET", betId, idempotencyKey);
+            case VOID, CANCELLED -> walletService.settleRefund(userId, bet.getStake(), "BET", betId, idempotencyKey);
+            default -> throw new IllegalArgumentException("Invalid settlement outcome: " + outcome);
+        }
     }
 }

@@ -27,6 +27,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BetService {
 
+    private static final int MONEY_SCALE = 2;
+    private static final RoundingMode MONEY_ROUNDING = RoundingMode.HALF_UP;
+
     private final BetRepository betRepository;
     private final SelectionRepository selectionRepository;
     private final WalletService walletService;
@@ -42,32 +45,54 @@ public class BetService {
     }
 
     private BetResponse createBet(User user, PlaceBetRequest request) {
+        assertUserActive(user);
+
+        BigDecimal stake = request.stake().setScale(MONEY_SCALE, MONEY_ROUNDING);
+        responsibleGamingService.validateStake(user.getId(), stake);
+
+        Selection selection = loadOpenSelection(request);
+        assertOddsUnchanged(selection, request.expectedOdds());
+
+        String idempotencyKey = request.idempotencyKey();
+        // Persist first so ledger referenceId is the real bet id; reserve failure rolls the bet back.
+        Bet savedBet = betRepository.save(buildAcceptedBet(user, selection, stake, idempotencyKey));
+        walletService.reserveFunds(
+                user.getId(),
+                stake,
+                "BET",
+                savedBet.getId().toString(),
+                "BET_RESERVE_" + idempotencyKey
+        );
+        publishBetPlacedEvent(savedBet, user.getId());
+        return mapToResponse(savedBet);
+    }
+
+    private void assertUserActive(User user) {
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new IllegalStateException("User account is not active: " + user.getStatus());
         }
+    }
 
-        BigDecimal stake = request.stake().setScale(2, RoundingMode.HALF_UP);
-        responsibleGamingService.validateStake(user.getId(), stake);
-
+    private Selection loadOpenSelection(PlaceBetRequest request) {
         Selection selection = selectionRepository.findById(request.selectionId())
                 .orElseThrow(() -> new IllegalArgumentException("Selection not found"));
 
         if (selection.getMarket().getStatus() != MarketStatus.OPEN) {
             throw new IllegalStateException("Market is not open: " + selection.getMarket().getStatus());
         }
+        return selection;
+    }
 
-        if (selection.getOdds().compareTo(request.expectedOdds()) != 0) {
+    private void assertOddsUnchanged(Selection selection, BigDecimal expectedOdds) {
+        if (selection.getOdds().compareTo(expectedOdds) != 0) {
             throw new IllegalStateException(
-                    "Odds have changed. Expected: " + request.expectedOdds() + ", Current: " + selection.getOdds());
+                    "Odds have changed. Expected: " + expectedOdds + ", Current: " + selection.getOdds());
         }
+    }
 
-        String idempotencyKey = request.idempotencyKey();
-        String walletKey = "BET_RESERVE_" + idempotencyKey;
-        walletService.reserveFunds(user.getId(), stake, "BET", "TEMP_" + idempotencyKey, walletKey);
-
-        BigDecimal potentialPayout = stake.multiply(selection.getOdds()).setScale(2, RoundingMode.HALF_UP);
-
-        Bet bet = Bet.builder()
+    private Bet buildAcceptedBet(User user, Selection selection, BigDecimal stake, String idempotencyKey) {
+        BigDecimal potentialPayout = stake.multiply(selection.getOdds()).setScale(MONEY_SCALE, MONEY_ROUNDING);
+        return Bet.builder()
                 .user(user)
                 .selection(selection)
                 .stake(stake)
@@ -77,21 +102,19 @@ public class BetService {
                 .placedAt(OffsetDateTime.now())
                 .idempotencyKey(idempotencyKey)
                 .build();
+    }
 
-        Bet savedBet = betRepository.save(bet);
-
+    private void publishBetPlacedEvent(Bet bet, Long userId) {
         try {
             String payload = objectMapper.writeValueAsString(Map.of(
-                    "betId", savedBet.getId(),
-                    "userId", user.getId(),
-                    "stake", savedBet.getStake()
+                    "betId", bet.getId(),
+                    "userId", userId,
+                    "stake", bet.getStake()
             ));
             outboxService.saveEvent("BET_PLACED", payload);
         } catch (Exception e) {
             throw new RuntimeException("Failed to save outbox event", e);
         }
-
-        return mapToResponse(savedBet);
     }
 
     private BetResponse mapToResponse(Bet bet) {
